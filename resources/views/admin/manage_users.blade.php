@@ -64,6 +64,8 @@
 
         /* Nút đăng xuất trong sidebar */
         .logout-btn {
+            margin-top: auto;
+            margin: 20px;
             padding: 12px 10px;
             background-color: #e74c3c;
             color: white;
@@ -75,15 +77,10 @@
             align-items: center;
             justify-content: flex-start;
             transition: background-color 0.3s;
-            margin-top: 500px;
-            margin-left: 10px;
-            width: auto;
         }
-
         .logout-btn i {
             margin-right: 5px;
         }
-
         .logout-btn:hover {
             background-color: #c0392b;
         }

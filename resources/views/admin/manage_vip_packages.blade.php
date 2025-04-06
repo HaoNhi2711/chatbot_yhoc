@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quản lý Dữ liệu Y Khoa - Chatbot Y Tế</title>
+    <title>Quản lý Gói VIP</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         body {
@@ -14,6 +14,7 @@
             display: flex;
         }
 
+        /* Sidebar */
         .sidebar {
             width: 260px;
             height: 100vh;
@@ -25,24 +26,20 @@
             flex-direction: column;
             box-shadow: 4px 0px 8px rgba(0, 0, 0, 0.1);
         }
-
         .sidebar .brand {
             text-align: center;
             font-size: 22px;
             font-weight: bold;
             margin-bottom: 30px;
         }
-
         .sidebar ul {
             list-style: none;
             padding: 0;
             margin: 0;
         }
-
         .sidebar ul li {
             margin: 10px 0;
         }
-
         .sidebar ul li a {
             color: white;
             padding: 12px 20px;
@@ -52,16 +49,13 @@
             font-size: 16px;
             transition: background-color 0.3s;
         }
-
         .sidebar ul li a i {
             margin-right: 12px;
         }
-
         .sidebar ul li a:hover {
             background-color: #0073e6;
             border-left: 5px solid white;
         }
-
         .logout-btn {
             margin-top: auto;
             margin: 20px;
@@ -84,22 +78,60 @@
             background-color: #c0392b;
         }
 
+        /* Nội dung chính */
         .content {
             margin-left: 260px;
             padding: 40px;
             flex-grow: 1;
         }
-
         .container {
             background-color: white;
             padding: 30px;
             border-radius: 8px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
-
         h1 {
             text-align: center;
+            color: #004080;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            font-weight: bold;
+            transition: background-color 0.3s ease, transform 0.2s;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+
+        .btn-danger {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+
+        .btn-warning {
+            background-color: #ffc107;
             color: #333;
+        }
+
+        .btn-warning:hover {
+            background-color: #e0a800;
         }
 
         table {
@@ -115,7 +147,6 @@
         th, td {
             padding: 12px;
             text-align: center;
-            vertical-align: top;
         }
 
         th {
@@ -123,76 +154,23 @@
             color: white;
         }
 
-        td.description {
-            white-space: pre-wrap;
-            word-wrap: break-word;
-            text-align: left;
-        }
-
-        .btn {
-            padding: 10px 20px;
-            background-color: #28a745;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-block;
-            transition: background-color 0.3s, transform 0.2s;
-        }
-
-        .btn:hover {
-            background-color: #218838;
-            transform: scale(1.05);
-        }
-
-        .btn-primary {
-            background-color: #007bff;
-        }
-
-        .btn-primary:hover {
-            background-color: #0069d9;
-        }
-
-        .btn-danger {
-            background-color: #dc3545;
-        }
-
-        .btn-danger:hover {
-            background-color: #c82333;
-        }
-
-        .search-box {
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .search-box input {
-            padding: 10px;
-            width: 100%;
-            max-width: 500px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            margin-right: 10px;
-        }
-
-        .search-box button {
-            padding: 10px 20px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        .search-box button:hover {
-            background-color: #0069d9;
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+            .content {
+                margin-left: 0;
+                padding: 20px;
+            }
         }
     </style>
 </head>
 <body>
+
+    <!-- Sidebar -->
     <div class="sidebar">
         <div class="brand">Admin - Chatbot Y Tế</div>
         <ul>
@@ -205,40 +183,33 @@
         <a href="{{ route('login') }}" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
     </div>
 
+    <!-- Nội dung -->
     <div class="content">
         <div class="container">
-            <h1>Danh sách Dữ liệu Y khoa</h1>
-
-            <div class="search-box">
-                <form method="GET" action="{{ route('admin.manage_medical_data') }}">
-                    <input type="text" name="search" placeholder="Tìm theo tiêu đề..." value="{{ request('search') }}">
-                    <button type="submit" class="btn btn-primary">Tìm kiếm</button>
-                </form>
-            </div>
-
-            <a href="{{ route('admin.create_medical_data') }}" class="btn btn-primary">Thêm Dữ liệu Y khoa</a>
+            <h1>Danh sách Gói VIP</h1>
+            <a href="{{ route('admin.create_vip_package') }}" class="btn btn-primary">+ Thêm Gói VIP</a>
             <table>
                 <thead>
                     <tr>
                         <th>ID</th>
-                        <th>Tiêu đề</th>
-                        <th>Mô tả</th>
-                        <th>Ngày tạo</th>
-                        <th>Ngày cập nhật</th>
-                        <th>Hành động</th>
+                        <th>Tên Khách Hàng</th>
+                        <th>Mô Tả</th>
+                        <th>Giá</th>
+                        <th>Thời Gian</th>
+                        <th>Hành Động</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($medicalData as $data)
+                    @foreach($vipPackages as $package)
                         <tr>
-                            <td>{{ $data->id }}</td>
-                            <td>{{ $data->title }}</td>
-                            <td class="description">{{ $data->description }}</td>
-                            <td>{{ $data->created_at }}</td>
-                            <td>{{ $data->updated_at }}</td>
-                            <td class="action-buttons">
-                                <a href="{{ route('admin.edit_medical_data', $data->id) }}" class="btn">Sửa</a>
-                                <form action="{{ route('admin.destroy_medical_data', $data->id) }}" method="POST" style="display:inline;">
+                            <td>{{ $package->id }}</td>
+                            <td>{{ $package->name }}</td>
+                            <td>{{ $package->description }}</td>
+                            <td>{{ number_format($package->price) }}₫</td>
+                            <td>{{ $package->duration }} ngày</td>
+                            <td>
+                                <a href="{{ route('admin.edit_vip_package', $package->id) }}" class="btn btn-warning">Sửa</a>
+                                <form action="{{ route('admin.delete_vip_package', $package->id) }}" method="POST" style="display:inline;">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn btn-danger">Xóa</button>
@@ -250,5 +221,6 @@
             </table>
         </div>
     </div>
+
 </body>
 </html>
