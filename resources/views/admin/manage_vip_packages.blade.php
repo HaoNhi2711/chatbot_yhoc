@@ -4,17 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quản lý Gói VIP</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: 'Arial', sans-serif;
-            background-color: #eef2f7;
+            font-family: 'Roboto', sans-serif;
             margin: 0;
-            padding: 0;
+            background-color: #eef2f7;
             display: flex;
         }
 
-        /* Sidebar */
         .sidebar {
             width: 260px;
             height: 100vh;
@@ -56,44 +55,41 @@
             background-color: #0073e6;
             border-left: 5px solid white;
         }
+
         .logout-btn {
-            margin-top: auto;
             margin: 20px;
             padding: 12px 10px;
             background-color: #e74c3c;
             color: white;
-            font-weight: bold;
-            text-align: left;
+            border: none;
             border-radius: 8px;
-            text-decoration: none;
+            font-weight: bold;
             display: flex;
             align-items: center;
-            justify-content: flex-start;
-            transition: background-color 0.3s;
+            justify-content: center;
+            cursor: pointer;
         }
-        .logout-btn i {
-            margin-right: 5px;
-        }
+
         .logout-btn:hover {
             background-color: #c0392b;
         }
 
-        /* Nội dung chính */
         .content {
             margin-left: 260px;
             padding: 40px;
-            flex-grow: 1;
+            width: 100%;
         }
+
         .container {
             background-color: white;
             padding: 30px;
             border-radius: 8px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
+
         h1 {
             text-align: center;
             color: #004080;
-            margin-bottom: 20px;
         }
 
         .btn {
@@ -104,7 +100,7 @@
             text-decoration: none;
             display: inline-block;
             font-weight: bold;
-            transition: background-color 0.3s ease, transform 0.2s;
+            transition: background-color 0.3s ease;
         }
 
         .btn-primary {
@@ -112,17 +108,9 @@
             color: white;
         }
 
-        .btn-primary:hover {
-            background-color: #0056b3;
-        }
-
         .btn-danger {
             background-color: #dc3545;
             color: white;
-        }
-
-        .btn-danger:hover {
-            background-color: #c82333;
         }
 
         .btn-warning {
@@ -130,8 +118,32 @@
             color: #333;
         }
 
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+
         .btn-warning:hover {
             background-color: #e0a800;
+        }
+
+        .alert {
+            padding: 12px 20px;
+            margin-bottom: 20px;
+            border-radius: 6px;
+            color: white;
+            font-weight: bold;
+        }
+
+        .alert-success {
+            background-color: #28a745;
+        }
+
+        .alert-error {
+            background-color: #dc3545;
         }
 
         table {
@@ -140,12 +152,9 @@
             margin-top: 20px;
         }
 
-        table, th, td {
-            border: 1px solid #ddd;
-        }
-
         th, td {
             padding: 12px;
+            border: 1px solid #ddd;
             text-align: center;
         }
 
@@ -154,49 +163,57 @@
             color: white;
         }
 
-        /* Responsive */
         @media (max-width: 768px) {
             .sidebar {
                 width: 100%;
                 height: auto;
                 position: relative;
             }
+
             .content {
                 margin-left: 0;
-                padding: 20px;
             }
         }
     </style>
 </head>
 <body>
-
-    <!-- Sidebar -->
     <div class="sidebar">
         <div class="brand">Admin - Chatbot Y Tế</div>
         <ul>
-            <li><a href="{{ route('admin.dashboard') }}"><i class="fas fa-chart-line"></i> Dashboard</a></li>
+            <li><a href="{{ route('admin.dashboard') }}"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
             <li><a href="{{ route('admin.manage_users') }}"><i class="fas fa-users"></i> Quản lý người dùng</a></li>
             <li><a href="{{ route('admin.manage_medical_data') }}"><i class="fas fa-notes-medical"></i> Quản lý Dữ liệu Y khoa</a></li>
-            <li><a href="{{ route('admin.manage_vip_packages') }}"><i class="fas fa-money-check-alt"></i> Quản lý Gói VIP</a></li>
-            <li><a href="{{ route('admin.statistics_reports') }}"><i class="fas fa-chart-bar"></i> Thống kê & Báo cáo</a></li>
+            <li><a href="{{ route('admin.manage_vip_packages') }}"><i class="fas fa-gift"></i> Quản lý Gói VIP</a></li>
+            <li><a href="{{ route('admin.manage_question_history') }}"><i class="fas fa-history"></i> Lịch sử câu hỏi</a></li> <!-- Thêm mục lịch sử câu hỏi -->
         </ul>
-        <a href="{{ route('login') }}" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
+        <form action="{{ route('logout') }}" method="POST" style="margin:1px;">
+            @csrf
+            <button type="submit" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Đăng xuất</button>
+        </form>
     </div>
 
-    <!-- Nội dung -->
     <div class="content">
         <div class="container">
-            <h1>Danh sách Gói VIP</h1>
+            <h1>Quản lý Gói VIP</h1>
+
+            @if(session('success'))
+                <div class="alert alert-success">{{ session('success') }}</div>
+            @endif
+
+            @if(session('error'))
+                <div class="alert alert-error">{{ session('error') }}</div>
+            @endif
+
             <a href="{{ route('admin.create_vip_package') }}" class="btn btn-primary">+ Thêm Gói VIP</a>
+
             <table>
                 <thead>
                     <tr>
                         <th>ID</th>
-                        <th>Tên Khách Hàng</th>
-                        <th>Mô Tả</th>
+                        <th>Tên Gói</th>
                         <th>Giá</th>
-                        <th>Thời Gian</th>
-                        <th>Hành Động</th>
+                        <th>Ngày tạo</th>
+                        <th>Hành động</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -204,23 +221,22 @@
                         <tr>
                             <td>{{ $package->id }}</td>
                             <td>{{ $package->name }}</td>
-                            <td>{{ $package->description }}</td>
-                            <td>{{ number_format($package->price) }}₫</td>
-                            <td>{{ $package->duration }} ngày</td>
+                            <td>{{ $package->price }} VNĐ</td>
+                            <td>{{ $package->created_at }}</td>
                             <td>
                                 <a href="{{ route('admin.edit_vip_package', $package->id) }}" class="btn btn-warning">Sửa</a>
                                 <form action="{{ route('admin.delete_vip_package', $package->id) }}" method="POST" style="display:inline;">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="btn btn-danger">Xóa</button>
+                                    <button class="btn btn-danger" type="submit">Xoá</button>
                                 </form>
                             </td>
                         </tr>
                     @endforeach
                 </tbody>
             </table>
+
         </div>
     </div>
-
 </body>
 </html>

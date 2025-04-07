@@ -3,17 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quản lý Dữ liệu Y Khoa</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <title>Quản lý Lịch sử Câu hỏi - Chatbot Y Tế</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
     <style>
         body {
             font-family: 'Roboto', sans-serif;
-            margin: 0;
             background-color: #eef2f7;
+            margin: 0;
+            padding: 0;
             display: flex;
         }
-
         .sidebar {
             width: 260px;
             height: 100vh;
@@ -55,21 +55,26 @@
             background-color: #0073e6;
             border-left: 5px solid white;
         }
-        
         .logout-btn {
+            margin-top: auto;
             margin: 20px;
             padding: 12px 10px;
             background-color: #e74c3c;
             color: white;
-            border: none;
-            border-radius: 8px;
             font-weight: bold;
+            text-align: left;
+            border-radius: 8px;
+            text-decoration: none;
             display: flex;
             align-items: center;
-            justify-content: center;
+            justify-content: flex-start;
+            transition: background-color 0.3s;
+            border: none;
             cursor: pointer;
         }
-
+        .logout-btn i {
+            margin-right: 5px;
+        }
         .logout-btn:hover {
             background-color: #c0392b;
         }
@@ -77,73 +82,17 @@
         .content {
             margin-left: 260px;
             padding: 40px;
-            width: 100%;
+            flex-grow: 1;
         }
-
         .container {
             background-color: white;
             padding: 30px;
             border-radius: 8px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
-
         h1 {
             text-align: center;
             color: #004080;
-        }
-
-        .btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-block;
-            font-weight: bold;
-            transition: background-color 0.3s ease;
-        }
-
-        .btn-primary {
-            background-color: #007bff;
-            color: white;
-        }
-
-        .btn-danger {
-            background-color: #dc3545;
-            color: white;
-        }
-
-        .btn-warning {
-            background-color: #ffc107;
-            color: #333;
-        }
-
-        .btn-primary:hover {
-            background-color: #0056b3;
-        }
-
-        .btn-danger:hover {
-            background-color: #c82333;
-        }
-
-        .btn-warning:hover {
-            background-color: #e0a800;
-        }
-
-        .alert {
-            padding: 12px 20px;
-            margin-bottom: 20px;
-            border-radius: 6px;
-            color: white;
-            font-weight: bold;
-        }
-
-        .alert-success {
-            background-color: #28a745;
-        }
-
-        .alert-error {
-            background-color: #dc3545;
         }
 
         table {
@@ -151,16 +100,25 @@
             border-collapse: collapse;
             margin-top: 20px;
         }
-
+        table, th, td {
+            border: 1px solid #ddd;
+        }
         th, td {
             padding: 12px;
-            border: 1px solid #ddd;
             text-align: center;
         }
-
         th {
             background-color: #0073e6;
             color: white;
+        }
+
+        .alert {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            border: 1px solid #c3e6cb;
         }
 
         @media (max-width: 768px) {
@@ -169,20 +127,22 @@
                 height: auto;
                 position: relative;
             }
-
             .content {
                 margin-left: 0;
+                padding: 20px;
             }
         }
     </style>
 </head>
 <body>
+
+    <!-- Sidebar -->
     <div class="sidebar">
         <div class="brand">Admin - Chatbot Y Tế</div>
         <ul>
             <li><a href="{{ route('admin.dashboard') }}"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
             <li><a href="{{ route('admin.manage_users') }}"><i class="fas fa-users"></i> Quản lý người dùng</a></li>
-            <li><a href="{{ route('admin.manage_medical_data') }}"><i class="fas fa-notes-medical"></i> Quản lý Dữ liệu Y Khoa</a></li>
+            <li><a href="{{ route('admin.manage_medical_data') }}"><i class="fas fa-notes-medical"></i> Quản lý Dữ liệu Y khoa</a></li>
             <li><a href="{{ route('admin.manage_vip_packages') }}"><i class="fas fa-gift"></i> Quản lý Gói VIP</a></li>
             <li><a href="{{ route('admin.manage_question_history') }}"><i class="fas fa-history"></i> Lịch sử câu hỏi</a></li> <!-- Thêm mục lịch sử câu hỏi -->
         </ul>
@@ -192,53 +152,40 @@
         </form>
     </div>
 
+    <!-- Nội dung -->
     <div class="content">
         <div class="container">
-            <h1>Quản lý Dữ liệu Y Khoa</h1>
+            <h1>📝 Lịch sử Câu hỏi</h1>
 
             @if(session('success'))
-                <div class="alert alert-success">{{ session('success') }}</div>
+                <div class="alert">
+                    {{ session('success') }}
+                </div>
             @endif
 
-            @if(session('error'))
-                <div class="alert alert-error">{{ session('error') }}</div>
-            @endif
-
-            <a href="{{ route('admin.create_medical_data') }}" class="btn btn-primary">+ Thêm Dữ liệu Y Khoa</a>
-
+            <!-- Bảng câu hỏi -->
             <table>
                 <thead>
                     <tr>
-                        <th>ID</th>
-                        <th>Tựa đề</th>
-                        <th>Mô tả</th>
+                        <th>#</th>
+                        <th>Câu hỏi</th>
                         <th>Ngày tạo</th>
-                        <th>Ngày cập nhật</th>
-                        <th>Hành động</th>
+                        <th>Trạng thái</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($medicalData as $data)
+                    @foreach ($questions as $question)
                         <tr>
-                            <td>{{ $data->id }}</td>
-                            <td>{{ $data->title }}</td>
-                            <td>{{ $data->description }}</td>
-                            <td>{{ $data->created_at }}</td>
-                            <td>{{ $data->updated_at }}</td>
-                            <td>
-                                <a href="{{ route('admin.edit_medical_data', $data->id) }}" class="btn btn-warning">Sửa</a>
-                                <form action="{{ route('admin.destroy_medical_data', $data->id) }}" method="POST" style="display:inline;">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button class="btn btn-danger" type="submit">Xoá</button>
-                                </form>
-                            </td>
+                            <td>{{ $loop->iteration }}</td>
+                            <td>{{ $question->content }}</td> <!-- Giả sử câu hỏi có trường 'content' -->
+                            <td>{{ $question->created_at->format('d/m/Y H:i') }}</td>
+                            <td>{{ $question->status ? 'Đã xử lý' : 'Chưa xử lý' }}</td> <!-- Giả sử câu hỏi có trạng thái -->
                         </tr>
                     @endforeach
                 </tbody>
             </table>
-
         </div>
     </div>
+
 </body>
 </html>

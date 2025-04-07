@@ -31,11 +31,14 @@ class VipPackageController extends Controller
             'duration' => 'required|integer',
         ]);
 
+        // Lấy dữ liệu từ request và tạo mới gói VIP
         $data = $request->only(['name', 'description', 'price', 'duration']);
 
+        // Tạo gói VIP mới
         VipPackage::create($data);
 
-        return redirect()->route('admin.admin.manage_vip_packages')->with('success', 'Gói VIP đã được thêm thành công!');
+        // Redirect về trang quản lý gói VIP với thông báo thành công
+        return redirect()->route('admin.manage_vip_packages')->with('success', 'Gói VIP đã được thêm thành công!');
     }
 
     // Hiển thị form chỉnh sửa gói VIP
@@ -54,18 +57,24 @@ class VipPackageController extends Controller
             'duration' => 'required|integer',
         ]);
 
+        // Lấy dữ liệu từ request và cập nhật gói VIP
         $data = $request->only(['name', 'description', 'price', 'duration']);
 
+        // Cập nhật gói VIP
         $vipPackage->update($data);
 
+        // Redirect về trang quản lý gói VIP với thông báo thành công
         return redirect()->route('admin.manage_vip_packages')->with('success', 'Gói VIP đã được cập nhật!');
     }
 
     // Xóa gói VIP
     public function destroy(VipPackage $vipPackage)
     {
+        // Xóa gói VIP
         $vipPackage->delete();
 
+        // Redirect về trang quản lý gói VIP với thông báo thành công
         return redirect()->route('admin.manage_vip_packages')->with('success', 'Gói VIP đã được xóa!');
     }
 }
+

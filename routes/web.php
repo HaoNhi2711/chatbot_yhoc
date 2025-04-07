@@ -8,6 +8,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\MedicalDataController;
 use App\Http\Controllers\Admin\VipPackageController;
+use App\Http\Controllers\Admin\ReportController;
 
 Route::get('/', function () {
     return Auth::check() ? redirect()->route('dashboard') : redirect()->route('login');
@@ -79,8 +80,9 @@ Route::middleware(['auth'])->group(function () {
             Route::put('/{vipPackage}', [VipPackageController::class, 'update'])->name('update_vip_package');
         });
 
-        // Quản lý báo cáo thống kê
-        Route::get('/statistics_reports', [AdminController::class, 'statisticsReports'])->name('statistics_reports');
+        // Lịch sử câu hỏi
+        Route::get('/manage_question_history', [AdminController::class, 'manageQuestionHistory'])->name('manage_question_history'); 
+
     });
 
     /*
@@ -92,3 +94,5 @@ Route::middleware(['auth'])->group(function () {
         return view('home');
     })->name('home');
 });
+//C:\Users\DOTRIHAO\chatbot-yhoc
+//php artisan serve
