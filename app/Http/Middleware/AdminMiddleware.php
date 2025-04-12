@@ -1,19 +1,17 @@
 <?php
-
 namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class CheckAdmin
+class AdminMiddleware
 {
     public function handle(Request $request, Closure $next)
     {
         if (!Auth::check() || Auth::user()->role !== 'admin') {
-            return redirect()->route('home')->withErrors(['message' => 'Bạn không có quyền truy cập!']);
+            return redirect()->route('login')->withErrors(['message' => 'Không có quyền admin!']);
         }
-
         return $next($request);
     }
 }

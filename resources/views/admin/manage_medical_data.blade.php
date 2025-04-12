@@ -184,7 +184,7 @@
             <li><a href="{{ route('admin.manage_users') }}"><i class="fas fa-users"></i> Quản lý người dùng</a></li>
             <li><a href="{{ route('admin.manage_medical_data') }}"><i class="fas fa-notes-medical"></i> Quản lý Dữ liệu Y Khoa</a></li>
             <li><a href="{{ route('admin.manage_vip_packages') }}"><i class="fas fa-gift"></i> Quản lý Gói VIP</a></li>
-            <li><a href="{{ route('admin.manage_question_history') }}"><i class="fas fa-history"></i> Lịch sử câu hỏi</a></li> <!-- Thêm mục lịch sử câu hỏi -->
+            <li><a href="{{ route('admin.admin.user_histories') }}"><i class="fas fa-history"></i> Lịch sử câu hỏi</a></li> <!-- Thêm mục lịch sử câu hỏi -->
         </ul>
         <form action="{{ route('logout') }}" method="POST" style="margin:1px;">
             @csrf

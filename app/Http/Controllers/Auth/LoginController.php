@@ -8,28 +8,56 @@ use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
+    // Hiển thị form đăng nhập
     public function showLoginForm()
     {
-        return view('login'); // Đảm bảo có file resources/views/auth/login.blade.php
+        return view('login');
     }
 
+    // Xử lý đăng nhập
     public function login(Request $request)
     {
+        // Kiểm tra dữ liệu đầu vào
         $credentials = $request->validate([
-            'email' => 'required|email',
-            'password' => 'required'
+            'email' => ['required', 'email'],
+            'password' => ['required'],
         ]);
 
+        // Thử đăng nhập
         if (Auth::attempt($credentials)) {
-            return redirect()->route('dashboard');
+            $request->session()->regenerate(); // Bảo mật session
+            $user = Auth::user();
+
+            // Điều hướng theo vai trò
+            if ($user->role === 'admin') {
+                return redirect()->route('admin.dashboard');
+            }
+
+            // Mặc định mọi user thường (kể cả VIP) đều vào chat
+            if ($user->role === 'user') {
+                return redirect()->route('user.chat');
+            }
+
+            // Nếu role không xác định
+            Auth::logout();
+            return redirect()->route('login')->withErrors([
+                'message' => 'Tài khoản không hợp lệ. Vui lòng liên hệ quản trị viên.',
+            ]);
         }
 
-        return back()->withErrors(['message' => 'Sai tài khoản hoặc mật khẩu!']);
+        // Đăng nhập thất bại
+        return back()->withErrors([
+            'message' => 'Sai email hoặc mật khẩu!',
+        ]);
     }
 
-    public function logout()
+    // Đăng xuất
+    public function logout(Request $request)
     {
         Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
         return redirect()->route('login');
     }
 }

@@ -3,168 +3,239 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use App\Models\MedicalData; // Nếu có mô hình MedicalData
-use App\Models\VipPackage; // Nếu có mô hình VipPackage
-use App\Models\Question; // Nếu có mô hình Question
+use App\Models\MedicalData;
+use App\Models\VipPackage;
+use App\Models\Question;
+use App\Models\UserHistory;
+use App\Models\VipSubscription;  // Sửa lại tên lớp đúng với model
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class AdminController extends Controller
 {
+    // Trang dashboard chính
     public function dashboard()
     {
-        // Lấy tổng số người dùng
         $usersCount = User::count();
-
-        // Lấy số người dùng VIP
         $vipCount = User::where('role', 'vip')->count();
-
-        // Lấy số quản trị viên
         $adminCount = User::where('role', 'admin')->count();
-
-        // Lấy số lượng dữ liệu y khoa (Giả sử bạn có một mô hình MedicalData)
         $medicalDataCount = MedicalData::count();
-
-        // Lấy số gói VIP (Giả sử bạn có một bảng vip_packages)
-        $vipPackages = VipPackage::count();
-
-        // Lấy 5 người dùng mới nhất
+        $vipPackages = VipPackage::has('users')->count();
         $latestUsers = User::latest()->take(5)->get();
-
-        // Lấy 5 dữ liệu y khoa mới nhất
         $latestMedicalData = MedicalData::latest()->take(5)->get();
 
-        // Truyền các biến vào view
         return view('admin.dashboard', compact(
-            'usersCount', 
-            'vipCount', 
-            'adminCount', 
-            'medicalDataCount', 
-            'vipPackages', 
-            'latestUsers', 
+            'usersCount',
+            'vipCount',
+            'adminCount',
+            'medicalDataCount',
+            'vipPackages',
+            'latestUsers',
             'latestMedicalData'
         ));
     }
 
+    // Quản lý người dùng
     public function manageUsers()
     {
-        // Lấy tất cả người dùng
         $users = User::all();
         return view('admin.manage_users', compact('users'));
     }
 
     public function editUser($id)
     {
-        // Lấy thông tin người dùng theo ID
         $user = User::findOrFail($id);
         return view('admin.edit_user', compact('user'));
     }
 
     public function updateUser(Request $request, $id)
     {
-        // Cập nhật thông tin người dùng
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'role' => 'required|string|in:admin,vip,user',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+
         $user = User::findOrFail($id);
-        $user->update($request->all());
+        $user->update($request->only('name', 'email', 'role'));
         return redirect()->route('admin.manage_users');
     }
 
     public function deleteUser($id)
     {
-        // Xóa người dùng
         $user = User::findOrFail($id);
+
+        if ($user->role === 'admin') {
+            return redirect()->route('admin.manage_users')->withErrors('Không thể xóa tài khoản admin');
+        }
+
         $user->delete();
         return redirect()->route('admin.manage_users');
     }
 
+    // Quản lý dữ liệu y tế
     public function manageMedicalData()
     {
-        // Quản lý dữ liệu y khoa
         $medicalData = MedicalData::all();
         return view('admin.manage_medical_data', compact('medicalData'));
     }
 
     public function createMedicalData()
     {
-        // Tạo mới dữ liệu y khoa
         return view('admin.create_medical_data');
     }
 
     public function storeMedicalData(Request $request)
     {
-        // Lưu dữ liệu y khoa mới
+        $validator = Validator::make($request->all(), [
+            'title' => 'required|string|max:255',
+            'content' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+
         MedicalData::create($request->all());
         return redirect()->route('admin.manage_medical_data');
     }
 
     public function editMedicalData($id)
     {
-        // Chỉnh sửa dữ liệu y khoa
         $medicalData = MedicalData::findOrFail($id);
         return view('admin.edit_medical_data', compact('medicalData'));
     }
 
     public function updateMedicalData(Request $request, $id)
     {
-        // Cập nhật dữ liệu y khoa
+        $validator = Validator::make($request->all(), [
+            'title' => 'required|string|max:255',
+            'content' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+
         $medicalData = MedicalData::findOrFail($id);
-        $medicalData->update($request->all());
+        $medicalData->update($request->only('title', 'content'));
         return redirect()->route('admin.manage_medical_data');
     }
 
     public function deleteMedicalData($id)
     {
-        // Xóa dữ liệu y khoa
         $medicalData = MedicalData::findOrFail($id);
         $medicalData->delete();
         return redirect()->route('admin.manage_medical_data');
     }
 
+    // Quản lý gói VIP
     public function manageVipPackages()
     {
-        // Quản lý gói VIP
         $vipPackages = VipPackage::all();
         return view('admin.manage_vip_packages', compact('vipPackages'));
     }
 
     public function createVipPackage()
     {
-        // Tạo mới gói VIP
         return view('admin.create_vip_package');
     }
 
     public function storeVipPackage(Request $request)
     {
-        // Lưu gói VIP mới
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'description' => 'required|string',
+            'price' => 'required|numeric',
+            'duration' => 'required|integer',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+
         VipPackage::create($request->all());
         return redirect()->route('admin.manage_vip_packages');
     }
 
     public function editVipPackage($id)
     {
-        // Chỉnh sửa gói VIP
         $vipPackage = VipPackage::findOrFail($id);
         return view('admin.edit_vip_package', compact('vipPackage'));
     }
 
     public function updateVipPackage(Request $request, $id)
     {
-        // Cập nhật gói VIP
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'description' => 'required|string',
+            'price' => 'required|numeric',
+            'duration' => 'required|integer',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+
         $vipPackage = VipPackage::findOrFail($id);
-        $vipPackage->update($request->all());
+        $vipPackage->update($request->only('name', 'description', 'price', 'duration'));
         return redirect()->route('admin.manage_vip_packages');
     }
 
     public function deleteVipPackage($id)
     {
-        // Xóa gói VIP
         $vipPackage = VipPackage::findOrFail($id);
         $vipPackage->delete();
         return redirect()->route('admin.manage_vip_packages');
     }
 
+    // Quản lý lịch sử câu hỏi
     public function manageQuestionHistory()
     {
-        // Giả sử bạn có một model gọi là Question để lấy dữ liệu lịch sử câu hỏi
         $questions = Question::orderBy('created_at', 'desc')->get();
         return view('admin.manage_question_history', compact('questions'));
+    }
+
+    // Hiển thị lịch sử sử dụng của một user cụ thể
+    public function showUserHistories($id)
+    {
+        $user = User::findOrFail($id);
+        $histories = UserHistory::where('user_id', $id)->latest()->get();
+        return view('admin.user_histories', compact('user', 'histories'));
+    }
+
+    // Quản lý gói VIP của người dùng
+    public function manageUserVipPackages($id)
+    {
+        $user = User::findOrFail($id);
+        $vipPackages = VipSubscription::where('user_id', $id)->with('vipPackage')->get();  // Sử dụng VipSubscription
+        return view('admin.manage_user_vip_packages', compact('user', 'vipPackages'));
+    }
+
+    // Gán gói VIP cho người dùng
+    public function assignVipPackage(Request $request, $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'vip_package_id' => 'required|exists:vip_packages,id',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after:start_date',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+
+        VipSubscription::create([  // Sử dụng VipSubscription
+            'user_id' => $id,
+            'vip_package_id' => $request->vip_package_id,
+            'start_date' => $request->start_date,
+            'end_date' => $request->end_date,
+        ]);
+
+        return redirect()->route('admin.manage_user_vip_packages', $id);
     }
 }

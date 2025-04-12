@@ -1,7 +1,5 @@
 <?php
 
-// app/Http/Kernel.php
-
 namespace App\Http;
 
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
@@ -9,9 +7,7 @@ use Illuminate\Foundation\Http\Kernel as HttpKernel;
 class Kernel extends HttpKernel
 {
     /**
-     * The application's global HTTP middleware stack.
-     *
-     * These middleware are run during every request to your application.
+     * Các middleware toàn cục (áp dụng cho mọi request)
      *
      * @var array<int, class-string>
      */
@@ -30,15 +26,14 @@ class Kernel extends HttpKernel
     ];
 
     /**
-     * The application's route middleware.
-     *
-     * This can be used to assign middleware to specific routes.
+     * Các middleware áp dụng cho từng route cụ thể
      *
      * @var array<string, class-string>
      */
     protected $routeMiddleware = [
         'auth' => \App\Http\Middleware\Authenticate::class,
-        'checkadmin' => \App\Http\Middleware\CheckAdmin::class,
-        'role' => \App\Http\Middleware\RoleMiddleware::class,
+        'user' => \App\Http\Middleware\UserMiddleware::class,
+        'admin' => \App\Http\Middleware\AdminMiddleware::class,
+        'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
     ];
 }

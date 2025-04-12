@@ -1,7 +1,5 @@
 <?php
 
-// app/Http/Controllers/Auth/RegisterController.php
-
 namespace App\Http\Controllers\Auth;
 
 use App\Models\User;
@@ -21,7 +19,7 @@ class RegisterController extends Controller
     // Xử lý đăng ký người dùng
     public function register(Request $request)
     {
-        // Validating input
+        // Validate input
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
@@ -34,17 +32,18 @@ class RegisterController extends Controller
                         ->withInput();
         }
 
-        // Tạo người dùng mới
+        // Tạo người dùng mới với role mặc định là 'user'
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'role' => 'user', // 👈 Gán role mặc định là 'user'
         ]);
 
         // Đăng nhập ngay sau khi đăng ký
         auth()->login($user);
 
-        return redirect()->route('admin.dashboard');
+        // Chuyển hướng tự động theo role
+        return redirect()->route('login');
     }
 }
-

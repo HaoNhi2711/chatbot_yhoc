@@ -56,7 +56,6 @@
             border-left: 5px solid white;
         }
         .logout-btn {
-            margin-top: auto;
             margin: 20px;
             padding: 12px 10px;
             background-color: #e74c3c;
@@ -78,7 +77,6 @@
         .logout-btn:hover {
             background-color: #c0392b;
         }
-
         .content {
             margin-left: 260px;
             padding: 40px;
@@ -121,7 +119,6 @@
             color: #333;
             margin-top: 10px;
         }
-
         table {
             width: 100%;
             border-collapse: collapse;
@@ -138,7 +135,6 @@
             background-color: #0073e6;
             color: white;
         }
-
         .alert {
             background-color: #d4edda;
             color: #155724;
@@ -147,7 +143,6 @@
             margin-bottom: 20px;
             border: 1px solid #c3e6cb;
         }
-
         @media (max-width: 768px) {
             .sidebar {
                 width: 100%;
@@ -174,9 +169,9 @@
             <li><a href="{{ route('admin.manage_users') }}"><i class="fas fa-users"></i> Quản lý người dùng</a></li>
             <li><a href="{{ route('admin.manage_medical_data') }}"><i class="fas fa-notes-medical"></i> Quản lý Dữ liệu Y khoa</a></li>
             <li><a href="{{ route('admin.manage_vip_packages') }}"><i class="fas fa-gift"></i> Quản lý Gói VIP</a></li>
-            <li><a href="{{ route('admin.manage_question_history') }}"><i class="fas fa-history"></i> Lịch sử câu hỏi</a></li> <!-- Thêm mục lịch sử câu hỏi -->
+            <li><a href="{{ route('admin.admin.user_histories') }}"><i class="fas fa-history"></i> Lịch sử hỏi đáp</a></li>
         </ul>
-        <form action="{{ route('logout') }}" method="POST" style="margin:1px;">
+        <form action="{{ route('logout') }}" method="POST">
             @csrf
             <button type="submit" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Đăng xuất</button>
         </form>
@@ -223,13 +218,23 @@
                     <th>Người dùng</th>
                     <th>Email</th>
                     <th>Thời gian tạo</th>
+                    <th>Gói VIP</th>
                 </tr>
                 @foreach($latestUsers as $user)
-                <tr>
-                    <td>{{ $user->name }}</td>
-                    <td>{{ $user->email }}</td>
-                    <td>{{ $user->created_at }}</td>
-                </tr>
+                    <tr>
+                        <td>{{ $user->name }}</td>
+                        <td>{{ $user->email }}</td>
+                        <td>{{ $user->created_at }}</td>
+                        <td>
+                            @if($user->vipPackage && $user->vipPackage->count())
+                                @foreach($user->vipPackage as $package)
+                                    {{ $package->name }}@if(!$loop->last), @endif
+                                @endforeach
+                            @else
+                                Chưa có gói VIP
+                            @endif
+                        </td>
+                    </tr>
                 @endforeach
             </table>
 
@@ -241,10 +246,10 @@
                     <th>Ngày tạo</th>
                 </tr>
                 @foreach($latestMedicalData as $data)
-                <tr>
-                    <td>{{ $data->title }}</td>
-                    <td>{{ $data->created_at }}</td>
-                </tr>
+                    <tr>
+                        <td>{{ $data->title }}</td>
+                        <td>{{ $data->created_at }}</td>
+                    </tr>
                 @endforeach
             </table>
         </div>

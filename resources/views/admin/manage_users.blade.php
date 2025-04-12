@@ -10,7 +10,7 @@
         body {
             font-family: 'Roboto', sans-serif;
             margin: 0;
-            background-color: #eef2f7;
+            background-color: #f4f6f8;
             display: flex;
         }
 
@@ -56,122 +56,110 @@
             border-left: 5px solid white;
         }
         .logout-btn {
-            margin: 20px;
-            padding: 12px 10px;
-            background-color: #e74c3c;
+            margin: 30px 20px 0;
+            padding: 12px;
+            background-color: #e11d48;
             color: white;
-            border: none;
+            text-align: center;
             border-radius: 8px;
+            text-decoration: none;
             font-weight: bold;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
         }
 
-        .logout-btn:hover {
-            background-color: #c0392b;
-        }
-
-        .content {
-            margin-left: 260px;
+        .main-content {
+            margin-left: 250px;
             padding: 40px;
-            width: 100%;
-        }
-
-        .container {
-            background-color: white;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            flex: 1;
         }
 
         h1 {
-            text-align: center;
-            color: #004080;
-        }
-
-        .btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-block;
-            font-weight: bold;
-            transition: background-color 0.3s ease;
-        }
-
-        .btn-primary {
-            background-color: #007bff;
-            color: white;
-        }
-
-        .btn-danger {
-            background-color: #dc3545;
-            color: white;
-        }
-
-        .btn-warning {
-            background-color: #ffc107;
-            color: #333;
-        }
-
-        .btn-primary:hover {
-            background-color: #0056b3;
-        }
-
-        .btn-danger:hover {
-            background-color: #c82333;
-        }
-
-        .btn-warning:hover {
-            background-color: #e0a800;
-        }
-
-        .alert {
-            padding: 12px 20px;
             margin-bottom: 20px;
-            border-radius: 6px;
+            color: #1e293b;
+        }
+
+        .top-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .btn-add {
+            background-color: #22c55e;
             color: white;
-            font-weight: bold;
-        }
-
-        .alert-success {
-            background-color: #28a745;
-        }
-
-        .alert-error {
-            background-color: #dc3545;
+            padding: 10px 16px;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            text-decoration: none;
+            cursor: pointer;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
+            background-color: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.05);
         }
 
         th, td {
-            padding: 12px;
-            border: 1px solid #ddd;
-            text-align: center;
+            padding: 14px 20px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
         }
 
         th {
-            background-color: #0073e6;
+            background-color: #f9fafb;
+            font-weight: 500;
+        }
+
+        tr:hover {
+            background-color: #f1f5f9;
+        }
+
+        .btn {
+            padding: 6px 10px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            text-decoration: none;
+        }
+
+        .btn-history {
+            background-color: #3b82f6;
             color: white;
         }
 
-        @media (max-width: 768px) {
-            .sidebar {
-                width: 100%;
-                height: auto;
-                position: relative;
-            }
+        .btn-edit {
+            background-color: #f59e0b;
+            color: white;
+        }
 
-            .content {
-                margin-left: 0;
-            }
+        .btn-delete {
+            background-color: #ef4444;
+            color: white;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        .vip-label {
+            padding: 5px 10px;
+            border-radius: 6px;
+            color: white;
+            font-weight: bold;
+        }
+
+        .vip-yes {
+            background-color: #10b981;
+        }
+
+        .vip-no {
+            background-color: #9ca3af;
         }
     </style>
 </head>
@@ -180,62 +168,61 @@
         <div class="brand">Admin - Chatbot Y Tế</div>
         <ul>
             <li><a href="{{ route('admin.dashboard') }}"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
-            <li><a href="{{ route('admin.manage_users') }}"><i class="fas fa-users"></i> Quản lý người dùng</a></li>
+            <li><a class="active" href="{{ route('admin.manage_users') }}"><i class="fas fa-users"></i> Quản lý người dùng</a></li>
             <li><a href="{{ route('admin.manage_medical_data') }}"><i class="fas fa-notes-medical"></i> Quản lý Dữ liệu Y khoa</a></li>
             <li><a href="{{ route('admin.manage_vip_packages') }}"><i class="fas fa-gift"></i> Quản lý Gói VIP</a></li>
-            <li><a href="{{ route('admin.manage_question_history') }}"><i class="fas fa-history"></i> Lịch sử câu hỏi</a></li> <!-- Thêm mục lịch sử câu hỏi -->
+            <li><a href="{{ route('admin.admin.user_histories') }}"><i class="fas fa-history"></i> Lịch sử hỏi đáp</a></li>
         </ul>
-        <form action="{{ route('logout') }}" method="POST" style="margin:1px;">
+        <form action="{{ route('logout') }}" method="POST">
             @csrf
             <button type="submit" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Đăng xuất</button>
         </form>
     </div>
 
-    <div class="content">
-        <div class="container">
-            <h1>Quản lý Người dùng</h1>
-
-            @if(session('success'))
-                <div class="alert alert-success">{{ session('success') }}</div>
-            @endif
-
-            @if(session('error'))
-                <div class="alert alert-error">{{ session('error') }}</div>
-            @endif
-
-            <a href="{{ route('admin.create_user') }}" class="btn btn-primary">+ Thêm Người dùng</a>
-
-            <table>
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Tên</th>
-                        <th>Email</th>
-                        <th>Vai trò</th>
-                        <th>Hành động</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($users as $user)
-                        <tr>
-                            <td>{{ $user->id }}</td>
-                            <td>{{ $user->name }}</td>
-                            <td>{{ $user->email }}</td>
-                            <td>{{ $user->role }}</td>
-                            <td>
-                                <a href="{{ route('admin.edit_user', $user->id) }}" class="btn btn-warning">Sửa</a>
-                                <form action="{{ route('admin.delete_user', $user->id) }}" method="POST" style="display:inline;">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button class="btn btn-danger" type="submit">Xoá</button>
-                                </form>
-                            </td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
-
+    <div class="main-content">
+        <div class="top-actions">
+            <h1>Danh sách người dùng</h1>
+            <a class="btn-add" href="{{ route('admin.create_user') }}"><i class="fas fa-plus"></i> Thêm người dùng</a>
         </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Tên</th>
+                    <th>Email</th>
+                    <th>Vai trò</th>
+                    <th>VIP</th>
+                    <th>Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($users as $user)
+                    <tr>
+                        <td>{{ $user->id }}</td>
+                        <td>{{ $user->name }}</td>
+                        <td>{{ $user->email }}</td>
+                        <td>{{ $user->role }}</td>
+                        <td>
+                            @if ($user->is_vip)
+                                <span class="vip-label vip-yes">VIP</span>
+                            @else
+                                <span class="vip-label vip-no">Thường</span>
+                            @endif
+                        </td>
+                        <td>
+                            <a class="btn btn-history" href="{{ route('admin.admin.user_histories', ['id' => $user->id]) }}">Lịch sử</a>
+                            <a class="btn btn-edit" href="{{ route('admin.edit_user', ['id' => $user->id]) }}">Sửa</a>
+                            <form action="{{ route('admin.delete_user', ['id' => $user->id]) }}" method="POST" style="display:inline;">
+                                @csrf
+                                @method('DELETE')
+                                <button class="btn btn-delete" onclick="return confirm('Xác nhận xoá người dùng này?')">Xoá</button>
+                            </form>
+                        </td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
     </div>
 </body>
 </html>
