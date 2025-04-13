@@ -1,0 +1,50 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Message;
+use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
+class HistoryController extends Controller
+{
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
+    public function userHistory()
+    {
+        $user = Auth::user();
+        if (!$user) {
+            return redirect()->route('login')->with('error', 'Vui lòng đăng nhập để xem lịch sử.');
+        }
+
+        $messages = Message::where('user_id', $user->id)
+            ->orderBy('created_at', 'asc')
+            ->get();
+
+        $isVip = $user->isVip();
+
+        return view('user.history', compact('messages', 'isVip'));
+    }
+
+    public function adminUserHistory($id)
+    {
+        if (Auth::user()->role !== 'admin') {
+            return redirect()->route('dashboard')->with('error', 'Bạn không có quyền truy cập.');
+        }
+
+        try {
+            $user = User::findOrFail($id);
+            $messages = Message::where('user_id', $user->id)
+                ->orderBy('created_at', 'asc')
+                ->get();
+
+            return view('admin.user_history', compact('messages', 'user'));
+        } catch (\Exception $e) {
+            return redirect()->route('dashboard')->with('error', 'Không tìm thấy người dùng.');
+        }
+    }
+}

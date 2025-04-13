@@ -2,9 +2,11 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>Chatbot Y Học</title>
+    <title>Lịch Sử Hỏi Đáp - Chatbot Y Học</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
     <style>
         * { box-sizing: border-box; }
         body {
@@ -75,13 +77,58 @@
         .sidebar form button.logout:hover {
             background: linear-gradient(45deg, #c0392b, #a5281a);
         }
+        .sidebar a.back-button {
+            display: flex;
+            align-items: center;
+            background: linear-gradient(45deg, #00c4b4, #009688);
+            color: white;
+            text-decoration: none;
+            padding: 14px 20px;
+            margin-bottom: 16px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+            position: relative;
+            overflow: hidden;
+        }
+        .sidebar a.back-button i {
+            margin-right: 10px;
+            transition: transform 0.3s ease;
+        }
+        .sidebar a.back-button:hover {
+            background: linear-gradient(45deg, #009688, #00796b);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.2);
+        }
+        .sidebar a.back-button:hover i {
+            transform: translateX(-5px);
+        }
+        .sidebar a.back-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+        .sidebar a.back-button:hover::before {
+            left: 100%;
+        }
+        .sidebar a.back-button:active {
+            transform: scale(0.95);
+        }
         .main {
             flex: 1;
             display: flex;
             flex-direction: column;
             margin-left: 260px;
         }
-        .chat-header {
+        .history-header {
             background-color: #ffffff;
             padding: 20px 30px;
             border-bottom: 1px solid #e0e0e0;
@@ -90,7 +137,7 @@
             color: #004080;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
         }
-        .chat-body {
+        .history-body {
             flex: 1;
             overflow-y: auto;
             padding: 30px;
@@ -121,53 +168,6 @@
             margin-right: auto;
             border: 1px solid #e0e0e0;
             color: #333;
-        }
-        .chat-input {
-            padding: 20px 30px;
-            background-color: #ffffff;
-            border-top: 1px solid #e0e0e0;
-            box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.05);
-        }
-        .chat-input form {
-            display: flex;
-            gap: 16px;
-            align-items: center;
-        }
-        .chat-input input[type="text"] {
-            flex: 1;
-            padding: 14px 20px;
-            border: 1px solid #d0d0d0;
-            border-radius: 12px;
-            font-size: 16px;
-            background-color: #f9f9f9;
-            transition: border-color 0.3s ease, box-shadow 0.3s ease;
-        }
-        .chat-input input[type="text"]:focus {
-            border-color: #0073e6;
-            box-shadow: 0 0 8px rgba(0, 115, 230, 0.2);
-            outline: none;
-        }
-        .chat-input button {
-            padding: 14px 24px;
-            background: linear-gradient(45deg, #0073e6, #0056b3);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: 600;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
-        }
-        .chat-input button:hover {
-            background: linear-gradient(45deg, #005bb5, #003087);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-        }
-        .chat-input button:disabled {
-            background: #b0bec5;
-            cursor: not-allowed;
-            box-shadow: none;
         }
         .time {
             font-size: 12px;
@@ -203,11 +203,8 @@
             .main {
                 margin-left: 0;
             }
-            .chat-body {
+            .history-body {
                 padding: 20px;
-            }
-            .chat-input {
-                padding: 16px 20px;
             }
             .toggle-sidebar {
                 display: block;
@@ -232,6 +229,7 @@
 
 <div class="sidebar" id="sidebar">
     <h2>🩺 Chatbot Y Học</h2>
+    <a href="{{ route('user.chat') }}" class="back-button"><i class="fas fa-arrow-left"></i> Quay lại Chatbot</a>
 
     @if (Auth::check() && $isVip)
         <div class="vip-label">👑 Thành viên VIP</div>
@@ -256,8 +254,8 @@
 </div>
 
 <div class="main">
-    <div class="chat-header">
-        Xin chào {{ Auth::user()->name ?? 'người dùng' }} 👋
+    <div class="history-header">
+        Lịch Sử Hỏi Đáp của {{ Auth::user()->name ?? 'người dùng' }}
     </div>
 
     @if (session('success'))
@@ -272,108 +270,40 @@
         </div>
     @endif
 
-    <div class="chat-body" id="chat-body">
-        @if (!empty($messages))
-            @foreach ($messages as $msg)
-                <div class="message {{ $msg->sender === 'user' ? 'user-message' : 'bot-message' }}">
-                    {{ $msg->message }}
-                    <div class="time">{{ $msg->created_at->format('H:i d/m/Y') }}</div>
-                </div>
-            @endforeach
-        @endif
-    </div>
-
-    <div class="chat-input">
-        @if (Auth::check())
-            <form id="chat-form">
-                <input type="text" name="message" id="message-input" placeholder="Nhập câu hỏi y học..." required autocomplete="off">
-                <button type="submit" id="send-button"><i class="fas fa-paper-plane"></i> Gửi</button>
-            </form>
+    <div class="history-body" id="history-body">
+        @if (empty($messages) || count($messages) === 0)
+            <p class="notification">Bạn chưa có lịch sử hỏi đáp.</p>
         @else
-            <p>Vui lòng <a href="{{ route('login') }}">đăng nhập</a> để gửi câu hỏi.</p>
+            @foreach ($messages as $msg)
+                <!-- Hiển thị câu hỏi của người dùng -->
+                <div class="message user-message">
+                    {{ $msg->question }}
+                    <div class="time">{{ \Carbon\Carbon::parse($msg->created_at)->format('H:i d/m/Y') }}</div>
+                </div>
+                <!-- Hiển thị trả lời của bot (nếu có) -->
+                @if ($msg->response)
+                    <div class="message bot-message">
+                        {{ $msg->response }}
+                        <div class="time">{{ \Carbon\Carbon::parse($msg->created_at)->format('H:i d/m/Y') }}</div>
+                    </div>
+                @endif
+            @endforeach
         @endif
     </div>
 </div>
 
 <script>
-    const chatBody = document.getElementById('chat-body');
-    const chatForm = document.getElementById('chat-form');
-    const messageInput = document.getElementById('message-input');
-    const sendButton = document.getElementById('send-button');
+    const historyBody = document.getElementById('history-body');
     const sidebar = document.getElementById('sidebar');
 
     // Cuộn xuống cuối khi tải trang
-    if (chatBody) {
-        chatBody.scrollTop = chatBody.scrollHeight;
-    }
-
-    // Tự động focus vào input
-    if (messageInput) {
-        messageInput.focus();
+    if (historyBody) {
+        historyBody.scrollTop = historyBody.scrollHeight;
     }
 
     // Toggle sidebar trên mobile
     function toggleSidebar() {
         sidebar.classList.toggle('active');
-    }
-
-    if (chatForm) {
-        chatForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const message = messageInput.value.trim();
-            if (!message) return;
-
-            // Vô hiệu hóa nút gửi để tránh gửi liên tục
-            sendButton.disabled = true;
-            sendButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang gửi...';
-
-            // Hiển thị tin nhắn người dùng
-            const userMessage = document.createElement('div');
-            userMessage.className = 'message user-message';
-            userMessage.innerHTML = `${message}<div class="time">${new Date().toLocaleString('vi-VN')}</div>`;
-            chatBody.appendChild(userMessage);
-
-            try {
-                const response = await fetch('{{ route('user.chat.send') }}', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                    },
-                    body: JSON.stringify({ message }),
-                });
-
-                const data = await response.json();
-
-                if (response.ok && data.success) {
-                    const botMessage = document.createElement('div');
-                    botMessage.className = 'message bot-message';
-                    botMessage.innerHTML = `${data.response}<div class="time">${new Date().toLocaleString('vi-VN')}</div>`;
-                    chatBody.appendChild(botMessage);
-                } else {
-                    const errorMessage = document.createElement('div');
-                    errorMessage.className = 'notification error';
-                    errorMessage.textContent = data.error || 'Lỗi không xác định từ server';
-                    if (response.status === 419) {
-                        errorMessage.textContent = 'Phiên hết hạn. Vui lòng đăng nhập lại.';
-                    } else if (response.status === 500) {
-                        errorMessage.textContent = 'Lỗi server. Vui lòng thử lại sau.';
-                    }
-                    chatBody.appendChild(errorMessage);
-                }
-            } catch (error) {
-                const errorMessage = document.createElement('div');
-                errorMessage.className = 'notification error';
-                errorMessage.textContent = 'Lỗi kết nối: ' + error.message;
-                chatBody.appendChild(errorMessage);
-            } finally {
-                // Kích hoạt lại nút gửi
-                messageInput.value = '';
-                sendButton.disabled = false;
-                sendButton.innerHTML = '<i class="fas fa-paper-plane"></i> Gửi';
-                chatBody.scrollTop = chatBody.scrollHeight;
-            }
-        });
     }
 </script>
 </body>

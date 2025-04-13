@@ -2,168 +2,349 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>Chỉnh Sửa Người Dùng - Chatbot Y Tế</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <!-- Google Fonts + Font Awesome -->
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Chỉnh Sửa Người Dùng</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { box-sizing: border-box; }
         body {
             font-family: 'Roboto', sans-serif;
-            background-color: #f7f9fc;
+            background-color: #eef2f7;
             margin: 0;
             padding: 0;
+            display: flex;
+            overflow-x: hidden;
         }
-
-        .container {
-            max-width: 600px;
-            margin: 50px auto;
-            background: #fff;
-            padding: 40px;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            font-size: 16px;
+        .sidebar {
+            width: 260px;
+            height: 100vh;
+            background-color: #004080;
+            color: white;
+            padding: 24px 20px;
+            position: fixed;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 4px 0 12px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
         }
-
-        h2 {
-            color: #0073e6;
+        .sidebar .brand {
             text-align: center;
-            margin-bottom: 30px;
             font-size: 24px;
             font-weight: 700;
+            margin-bottom: 30px;
+            color: #ffffff;
         }
-
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            flex-grow: 1;
+        }
+        .sidebar ul li {
+            margin: 8px 0;
+        }
+        .sidebar ul li a {
+            color: white;
+            padding: 14px 20px;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 500;
+            background: linear-gradient(45deg, #0073e6, #0056b3);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        .sidebar ul li a i {
+            margin-right: 12px;
+            transition: transform 0.3s ease;
+        }
+        .sidebar ul li a:hover {
+            background: linear-gradient(45deg, #005bb5, #003087);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        .sidebar ul li a:hover i {
+            transform: translateX(5px);
+        }
+        .sidebar ul li a::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+        .sidebar ul li a:hover::before {
+            left: 100%;
+        }
+        .logout-btn {
+            padding: 14px 20px;
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+            color: white;
+            font-weight: 500;
+            border-radius: 12px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        .logout-btn i {
+            margin-right: 10px;
+            transition: transform 0.3s ease;
+        }
+        .logout-btn:hover {
+            background: linear-gradient(45deg, #c0392b, #a5281a);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        .logout-btn:hover i {
+            transform: translateX(5px);
+        }
+        .logout-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+        .logout-btn:hover::before {
+            left: 100%;
+        }
+        .content {
+            margin-left: 260px;
+            padding: 40px;
+            flex-grow: 1;
+            min-height: 100vh;
+        }
+        .container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            color: #004080;
+            font-size: 28px;
+            margin-bottom: 30px;
+        }
         label {
             display: block;
             margin-bottom: 8px;
-            font-weight: bold;
+            font-weight: 500;
             color: #333;
         }
-
         input[type="text"],
         input[type="email"],
         select {
             width: 100%;
-            padding: 12px;
-            margin-bottom: 20px;
-            border: 1px solid #ddd;
+            padding: 14px;
+            border: 1px solid #e0e0e0;
             border-radius: 8px;
+            margin-bottom: 20px;
             font-size: 16px;
-            background-color: #f9f9f9;
-            transition: border-color 0.3s ease;
+            background-color: #f8fafc;
+            transition: border-color 0.3s, box-shadow 0.3s;
         }
-
-        input[type="text"]:focus,
-        input[type="email"]:focus,
+        input:focus,
         select:focus {
             border-color: #0073e6;
-            outline: none;
             box-shadow: 0 0 8px rgba(0, 115, 230, 0.2);
+            outline: none;
         }
-
-        .btn-save {
-            background-color: #0073e6;
-            color: white;
-            padding: 14px;
-            font-size: 16px;
-            font-weight: bold;
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #f5c6cb;
+            font-size: 14px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        .btn {
+            padding: 14px 24px;
             border: none;
             border-radius: 8px;
             cursor: pointer;
-            width: 100%;
-            transition: background-color 0.3s ease;
-        }
-
-        .btn-save:hover {
-            background-color: #005bb5;
-        }
-
-        .back-link {
-            display: block;
-            text-align: center;
-            margin-top: 20px;
-            color: #0073e6;
-            text-decoration: none;
-            font-weight: bold;
             font-size: 16px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            color: white;
+            text-decoration: none;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
         }
-
-        .back-link:hover {
-            text-decoration: underline;
+        .btn-submit {
+            background: linear-gradient(45deg, #28a745, #218838);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
-
-        .error {
-            color: #ff4d4d;
-            margin-top: -10px;
-            margin-bottom: 15px;
-            font-size: 14px;
+        .btn-back {
+            background: linear-gradient(45deg, #0073e6, #0056b3);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
-
-        .form-group {
-            margin-bottom: 25px;
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
         }
-
-        .form-group:last-child {
-            margin-bottom: 0;
+        .btn-submit:hover {
+            background: linear-gradient(45deg, #218838, #1e7e34);
         }
-
-        .icon {
-            font-size: 20px;
-            margin-right: 8px;
+        .btn-back:hover {
+            background: linear-gradient(45deg, #005bb5, #003087);
         }
-
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+        .btn:hover::before {
+            left: 100%;
+        }
+        .toggle-sidebar {
+            display: none;
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: #004080;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            z-index: 1001;
+        }
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-260px);
+                position: fixed;
+                z-index: 1000;
+            }
+            .sidebar.active {
+                transform: translateX(0);
+            }
+            .content {
+                margin-left: 0;
+                padding: 20px;
+            }
+            .container {
+                margin: 0 10px;
+            }
+            .button-group {
+                flex-direction: column;
+                width: 100%;
+            }
+            .btn {
+                width: 100%;
+            }
+            .toggle-sidebar {
+                display: block;
+            }
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h2><i class="fas fa-user-edit icon"></i> Chỉnh Sửa Người Dùng</h2>
+    <!-- Nút toggle sidebar cho mobile -->
+    <button class="toggle-sidebar" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
 
-        <form method="POST" action="{{ url('/admin/manage_users/' . $user->id . '/edit') }}">
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="brand">🩺 Admin - Chatbot Y Tế</div>
+        <ul>
+            <li><a href="{{ route('admin.dashboard') }}"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+            <li><a href="{{ route('admin.manage_users') }}"><i class="fas fa-users"></i> Quản lý người dùng</a></li>
+            <li><a href="{{ route('admin.manage_medical_data') }}"><i class="fas fa-notes-medical"></i> Dữ liệu Y khoa</a></li>
+            <li><a href="{{ route('admin.vip_subscriptions.index') }}"><i class="fas fa-star"></i> Đăng ký VIP</a></li>
+        </ul>
+        <form action="{{ route('logout') }}" method="POST">
             @csrf
-
-            <div class="form-group">
-                <label for="name">Họ Tên</label>
-                <input type="text" name="name" id="name" value="{{ old('name', $user->name) }}" required>
-                @error('name')
-                    <div class="error">{{ $message }}</div>
-                @enderror
-            </div>
-
-            <div class="form-group">
-                <label for="email">Email</label>
-                <input type="email" name="email" id="email" value="{{ old('email', $user->email) }}" required>
-                @error('email')
-                    <div class="error">{{ $message }}</div>
-                @enderror
-            </div>
-
-            <div class="form-group">
-                <label for="role">Vai trò</label>
-                <select name="role" id="role" required>
-                    <option value="user" {{ $user->role === 'user' ? 'selected' : '' }}>Người dùng</option>
-                    <option value="admin" {{ $user->role === 'admin' ? 'selected' : '' }}>Quản trị viên</option>
-                </select>
-                @error('role')
-                    <div class="error">{{ $message }}</div>
-                @enderror
-            </div>
-
-            <button type="submit" class="btn-save">
-                <i class="fas fa-save"></i> Lưu Thay Đổi
-            </button>
+            <button type="submit" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Đăng xuất</button>
         </form>
-
-        <a href="{{ route('admin.manage_users') }}" class="back-link">
-            <i class="fas fa-arrow-left"></i> Quay lại danh sách người dùng
-        </a>
     </div>
+
+    <!-- Nội dung -->
+    <div class="content">
+        <div class="container">
+            <h1>✏️ Chỉnh Sửa Người Dùng</h1>
+
+            <form method="POST" action="{{ route('admin.update_user', $user->id) }}">
+                @csrf
+                @method('PUT')
+
+                <div class="form-group">
+                    <label for="name">Họ Tên</label>
+                    <input type="text" name="name" id="name" value="{{ old('name', $user->name) }}" required>
+                    @error('name')
+                        <div class="error">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" name="email" id="email" value="{{ old('email', $user->email) }}" required>
+                    @error('email')
+                        <div class="error">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="form-group">
+                    <label for="role">Vai trò</label>
+                    <select name="role" id="role" required>
+                        <option value="user" {{ old('role', $user->role) === 'user' ? 'selected' : '' }}>Người dùng</option>
+                        <option value="admin" {{ old('role', $user->role) === 'admin' ? 'selected' : '' }}>Quản trị viên</option>
+                    </select>
+                    @error('role')
+                        <div class="error">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="button-group">
+                    <a href="{{ route('admin.manage_users') }}" class="btn btn-back"><i class="fas fa-arrow-left"></i> Quay lại</a>
+                    <button type="submit" class="btn btn-submit"><i class="fas fa-save"></i> Lưu Thay Đổi</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('active');
+        }
+    </script>
 </body>
 </html>

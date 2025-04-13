@@ -7,194 +7,282 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
     <style>
+        * { box-sizing: border-box; }
         body {
             font-family: 'Roboto', sans-serif;
             background-color: #eef2f7;
             margin: 0;
             padding: 0;
             display: flex;
+            overflow-x: hidden;
         }
         .sidebar {
             width: 260px;
             height: 100vh;
             background-color: #004080;
             color: white;
-            padding-top: 20px;
+            padding: 24px 20px;
             position: fixed;
             display: flex;
             flex-direction: column;
-            box-shadow: 4px 0px 8px rgba(0, 0, 0, 0.1);
+            box-shadow: 4px 0 12px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
         }
         .sidebar .brand {
             text-align: center;
-            font-size: 22px;
-            font-weight: bold;
+            font-size: 24px;
+            font-weight: 700;
             margin-bottom: 30px;
+            color: #ffffff;
         }
         .sidebar ul {
             list-style: none;
             padding: 0;
             margin: 0;
+            flex-grow: 1;
         }
         .sidebar ul li {
-            margin: 10px 0;
+            margin: 8px 0;
         }
         .sidebar ul li a {
             color: white;
-            padding: 12px 20px;
+            padding: 14px 20px;
             display: flex;
             align-items: center;
             text-decoration: none;
             font-size: 16px;
-            transition: background-color 0.3s;
+            font-weight: 500;
+            background: linear-gradient(45deg, #0073e6, #0056b3);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
         }
         .sidebar ul li a i {
             margin-right: 12px;
+            transition: transform 0.3s ease;
         }
         .sidebar ul li a:hover {
-            background-color: #0073e6;
-            border-left: 5px solid white;
+            background: linear-gradient(45deg, #005bb5, #003087);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        .sidebar ul li a:hover i {
+            transform: translateX(5px);
+        }
+        .sidebar ul li a::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+        .sidebar ul li a:hover::before {
+            left: 100%;
         }
         .logout-btn {
-            margin: 20px;
-            padding: 12px 10px;
-            background-color: #e74c3c;
+            padding: 14px 20px;
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
             color: white;
-            font-weight: bold;
-            text-align: left;
-            border-radius: 8px;
+            font-weight: 500;
+            border-radius: 12px;
             text-decoration: none;
             display: flex;
             align-items: center;
-            justify-content: flex-start;
-            transition: background-color 0.3s;
             border: none;
             cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
         }
         .logout-btn i {
-            margin-right: 5px;
+            margin-right: 10px;
+            transition: transform 0.3s ease;
         }
         .logout-btn:hover {
-            background-color: #c0392b;
+            background: linear-gradient(45deg, #c0392b, #a5281a);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        .logout-btn:hover i {
+            transform: translateX(5px);
+        }
+        .logout-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+        .logout-btn:hover::before {
+            left: 100%;
         }
         .content {
             margin-left: 260px;
             padding: 40px;
             flex-grow: 1;
+            min-height: 100vh;
         }
         .container {
-            background-color: white;
+            background-color: #ffffff;
             padding: 30px;
-            border-radius: 8px;
+            border-radius: 12px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
         h1 {
             text-align: center;
             color: #004080;
+            font-size: 28px;
+            margin-bottom: 30px;
         }
         .stats {
             display: flex;
             justify-content: space-between;
             margin-bottom: 30px;
             flex-wrap: wrap;
+            gap: 20px;
         }
         .stats .card {
-            background: white;
+            background: #ffffff;
             padding: 20px;
-            flex: 1 1 30%;
+            flex: 1 1 22%;
             margin: 10px;
-            border-radius: 8px;
+            border-radius: 12px;
             text-align: center;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
         }
         .stats .card:hover {
             transform: translateY(-5px);
         }
         .stats .card h3 {
             color: #0073e6;
-            font-size: 26px;
+            font-size: 28px;
+            margin: 0;
         }
         .stats .card p {
             color: #333;
-            margin-top: 10px;
+            margin-top: 8px;
+            font-size: 16px;
         }
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
         }
         table, th, td {
-            border: 1px solid #ddd;
+            border: 1px solid #e0e0e0;
         }
         th, td {
-            padding: 12px;
+            padding: 14px;
             text-align: center;
         }
         th {
-            background-color: #0073e6;
+            background: linear-gradient(45deg, #0073e6, #0056b3);
             color: white;
+            font-weight: 600;
+        }
+        td {
+            color: #333;
+        }
+        tr:nth-child(even) {
+            background-color: #f8fafc;
+        }
+        .history-link {
+            color: #0073e6;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        .history-link:hover {
+            color: #005bb5;
+            text-decoration: underline;
         }
         .alert {
             background-color: #d4edda;
             color: #155724;
             padding: 12px;
-            border-radius: 6px;
+            border-radius: 8px;
             margin-bottom: 20px;
             border: 1px solid #c3e6cb;
+            font-size: 14px;
+        }
+        .toggle-sidebar {
+            display: none;
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: #004080;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            z-index: 1001;
         }
         @media (max-width: 768px) {
             .sidebar {
-                width: 100%;
-                height: auto;
-                position: relative;
+                transform: translateX(-260px);
+                position: fixed;
+                z-index: 1000;
+            }
+            .sidebar.active {
+                transform: translateX(0);
             }
             .content {
                 margin-left: 0;
                 padding: 20px;
             }
-            .stats {
-                flex-direction: column;
+            .stats .card {
+                flex: 1 1 100%;
+            }
+            .toggle-sidebar {
+                display: block;
             }
         }
     </style>
 </head>
 <body>
-
-    <!-- Sidebar -->
-    <div class="sidebar">
-        <div class="brand">Admin - Chatbot Y Tế</div>
+    <button class="toggle-sidebar" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+    <div class="sidebar" id="sidebar">
+        <div class="brand">🩺 Admin - Chatbot Y Tế</div>
         <ul>
             <li><a href="{{ route('admin.dashboard') }}"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
             <li><a href="{{ route('admin.manage_users') }}"><i class="fas fa-users"></i> Quản lý người dùng</a></li>
-            <li><a href="{{ route('admin.manage_medical_data') }}"><i class="fas fa-notes-medical"></i> Quản lý Dữ liệu Y khoa</a></li>
-            <li><a href="{{ route('admin.manage_vip_packages') }}"><i class="fas fa-gift"></i> Quản lý Gói VIP</a></li>
-            <li><a href="{{ route('admin.admin.user_histories') }}"><i class="fas fa-history"></i> Lịch sử hỏi đáp</a></li>
+            <li><a href="{{ route('admin.manage_medical_data') }}"><i class="fas fa-notes-medical"></i> Dữ liệu Y khoa</a></li>
+            <li><a href="{{ route('admin.vip_subscriptions.index') }}"><i class="fas fa-star"></i> Đăng ký VIP</a></li>
         </ul>
         <form action="{{ route('logout') }}" method="POST">
             @csrf
             <button type="submit" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Đăng xuất</button>
         </form>
     </div>
-
-    <!-- Nội dung -->
     <div class="content">
         <div class="container">
             <h1>📊 Báo cáo Thống Kê Hệ Thống</h1>
-
-            @if(session('success'))
+            @if (session('success'))
                 <div class="alert">
                     {{ session('success') }}
                 </div>
             @endif
-
             <div class="stats">
                 <div class="card">
-                    <h3>{{ $usersCount }}</h3>
+                    <h3>{{ $totalUsers }}</h3>
                     <p>Người dùng</p>
                 </div>
                 <div class="card">
-                    <h3>{{ $vipCount }}</h3>
+                    <h3>{{ $vipUsers }}</h3>
                     <p>Người dùng VIP</p>
                 </div>
                 <div class="card">
@@ -205,55 +293,64 @@
                     <h3>{{ $medicalDataCount }}</h3>
                     <p>Dữ liệu Y khoa</p>
                 </div>
-                <div class="card">
-                    <h3>{{ $vipPackages }}</h3>
-                    <p>Gói VIP</p>
-                </div>
             </div>
-
-            <!-- Người dùng mới -->
             <h2>🆕 Người dùng mới nhất</h2>
             <table>
-                <tr>
-                    <th>Người dùng</th>
-                    <th>Email</th>
-                    <th>Thời gian tạo</th>
-                    <th>Gói VIP</th>
-                </tr>
-                @foreach($latestUsers as $user)
+                <thead>
                     <tr>
-                        <td>{{ $user->name }}</td>
-                        <td>{{ $user->email }}</td>
-                        <td>{{ $user->created_at }}</td>
-                        <td>
-                            @if($user->vipPackage && $user->vipPackage->count())
-                                @foreach($user->vipPackage as $package)
-                                    {{ $package->name }}@if(!$loop->last), @endif
-                                @endforeach
-                            @else
-                                Chưa có gói VIP
-                            @endif
-                        </td>
+                        <th>Người dùng</th>
+                        <th>Email</th>
+                        <th>Thời gian tạo</th>
+                        <th>Gói VIP</th>
+                        <th>Lịch sử</th>
                     </tr>
-                @endforeach
+                </thead>
+                <tbody>
+                    @foreach ($recentUsers as $user)
+                        <tr>
+                            <td>{{ $user->name }}</td>
+                            <td>{{ $user->email }}</td>
+                            <td>{{ $user->created_at->format('H:i d/m/Y') }}</td>
+                            <td>
+                                @if ($user->subscriptions->isNotEmpty())
+                                    @foreach ($user->subscriptions()->where('end_date', '>=', now())->get() as $subscription)
+                                        {{ $subscription->vipPackage->name ?? 'Gói VIP' }}@if (!$loop->last), @endif
+                                    @endforeach
+                                @else
+                                    Chưa có gói VIP
+                                @endif
+                            </td>
+                            <td>
+                                <a href="{{ route('admin.user_history', $user->id) }}" class="history-link">Xem</a>
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
             </table>
-
-            <!-- Dữ liệu y khoa mới -->
             <h2>🧬 Dữ liệu y khoa mới nhất</h2>
             <table>
-                <tr>
-                    <th>Tựa đề</th>
-                    <th>Ngày tạo</th>
-                </tr>
-                @foreach($latestMedicalData as $data)
+                <thead>
                     <tr>
-                        <td>{{ $data->title }}</td>
-                        <td>{{ $data->created_at }}</td>
+                        <th>Tựa đề</th>
+                        <th>Ngày tạo</th>
                     </tr>
-                @endforeach
+                </thead>
+                <tbody>
+                    @foreach ($recentMedicalData as $data)
+                        <tr>
+                            <td>{{ $data->title }}</td>
+                            <td>{{ $data->created_at->format('H:i d/m/Y') }}</td>
+                        </tr>
+                    @endforeach
+                </tbody>
             </table>
         </div>
     </div>
-
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('active');
+        }
+    </script>
 </body>
 </html>

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -10,34 +11,49 @@ class User extends Authenticatable implements MustVerifyEmail
 {
     use Notifiable;
 
-    protected $dates = ['email_verified_at', 'vip_expires_at'];
+    protected $dates = ['email_verified_at'];
 
     protected $fillable = [
-        'name', 'email', 'password', 'email_verified_at', 'vip_package_id', 'vip_expires_at'
+        'name', 'email', 'password', 'email_verified_at'
     ];
 
-    // Quan hệ với gói VIP
-    public function vipPackage()
-    {
-        return $this->belongsTo(VipPackage::class, 'vip_package_id');
-    }
-
-    // Quan hệ với bảng UserVipSubscription
+    /**
+     * Quan hệ với bảng vip_subscriptions.
+     */
     public function subscriptions()
     {
-        return $this->hasMany(UserVipSubscription::class, 'user_id');
+        return $this->hasMany(VipSubscription::class, 'user_id');
     }
 
     /**
-     * Kiểm tra nếu người dùng đã đăng ký gói VIP hợp lệ.
+     * Quan hệ với bảng messages.
+     */
+    public function messages()
+    {
+        return $this->hasMany(Message::class, 'user_id');
+    }
+
+    /**
+     * Kiểm tra xem người dùng có phải là VIP không.
      *
      * @return bool
      */
     public function isVip()
     {
-        // Kiểm tra nếu người dùng có bất kỳ đăng ký VIP nào có ngày kết thúc còn lại và hợp lệ
-        $latestSubscription = $this->subscriptions()->where('end_date', '>=', now())->latest()->first();
-        
-        return $latestSubscription ? true : false;
+        return $this->subscriptions()->where('end_date', '>=', now())->exists();
+    }
+
+    /**
+     * Lấy gói VIP hiện tại của người dùng (nếu còn hạn).
+     *
+     * @return \App\Models\VipPackage|null
+     */
+    public function currentVipPackage()
+    {
+        $subscription = $this->subscriptions()
+            ->where('end_date', '>=', Carbon::now())
+            ->latest()
+            ->first();
+        return $subscription ? $subscription->vipPackage : null;
     }
 }

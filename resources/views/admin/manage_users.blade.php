@@ -3,226 +3,326 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quản lý Người dùng</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <title>Quản Lý Người Dùng - Chatbot Y Tế</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
     <style>
+        * { box-sizing: border-box; }
         body {
             font-family: 'Roboto', sans-serif;
+            background-color: #eef2f7;
             margin: 0;
-            background-color: #f4f6f8;
+            padding: 0;
             display: flex;
+            overflow-x: hidden;
         }
-
         .sidebar {
             width: 260px;
             height: 100vh;
             background-color: #004080;
             color: white;
-            padding-top: 20px;
+            padding: 24px 20px;
             position: fixed;
             display: flex;
             flex-direction: column;
-            box-shadow: 4px 0px 8px rgba(0, 0, 0, 0.1);
+            box-shadow: 4px 0 12px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
         }
         .sidebar .brand {
             text-align: center;
-            font-size: 22px;
-            font-weight: bold;
+            font-size: 24px;
+            font-weight: 700;
             margin-bottom: 30px;
+            color: #ffffff;
         }
         .sidebar ul {
             list-style: none;
             padding: 0;
             margin: 0;
+            flex-grow: 1;
         }
         .sidebar ul li {
-            margin: 10px 0;
+            margin: 8px 0;
         }
         .sidebar ul li a {
             color: white;
-            padding: 12px 20px;
+            padding: 14px 20px;
             display: flex;
             align-items: center;
             text-decoration: none;
             font-size: 16px;
-            transition: background-color 0.3s;
+            font-weight: 500;
+            background: linear-gradient(45deg, #0073e6, #0056b3);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
         }
         .sidebar ul li a i {
             margin-right: 12px;
+            transition: transform 0.3s ease;
         }
         .sidebar ul li a:hover {
-            background-color: #0073e6;
-            border-left: 5px solid white;
+            background: linear-gradient(45deg, #005bb5, #003087);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        .sidebar ul li a:hover i {
+            transform: translateX(5px);
+        }
+        .sidebar ul li a::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+        .sidebar ul li a:hover::before {
+            left: 100%;
         }
         .logout-btn {
-            margin: 30px 20px 0;
-            padding: 12px;
-            background-color: #e11d48;
+            padding: 14px 20px;
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
             color: white;
-            text-align: center;
-            border-radius: 8px;
+            font-weight: 500;
+            border-radius: 12px;
             text-decoration: none;
-            font-weight: bold;
-        }
-
-        .main-content {
-            margin-left: 250px;
-            padding: 40px;
-            flex: 1;
-        }
-
-        h1 {
-            margin-bottom: 20px;
-            color: #1e293b;
-        }
-
-        .top-actions {
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .btn-add {
-            background-color: #22c55e;
-            color: white;
-            padding: 10px 16px;
             border: none;
-            border-radius: 8px;
-            font-size: 15px;
-            text-decoration: none;
             cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
         }
-
+        .logout-btn i {
+            margin-right: 10px;
+            transition: transform 0.3s ease;
+        }
+        .logout-btn:hover {
+            background: linear-gradient(45deg, #c0392b, #a5281a);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        .logout-btn:hover i {
+            transform: translateX(5px);
+        }
+        .logout-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+        .logout-btn:hover::before {
+            left: 100%;
+        }
+        .content {
+            margin-left: 260px;
+            padding: 40px;
+            flex-grow: 1;
+            min-height: 100vh;
+        }
+        .container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #004080;
+            font-size: 28px;
+            margin-bottom: 30px;
+        }
         table {
             width: 100%;
             border-collapse: collapse;
-            background-color: white;
-            border-radius: 12px;
+            margin-top: 20px;
+            background-color: #ffffff;
+            border-radius: 8px;
             overflow: hidden;
-            box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.05);
         }
-
+        table, th, td {
+            border: 1px solid #e0e0e0;
+        }
         th, td {
-            padding: 14px 20px;
-            text-align: left;
-            border-bottom: 1px solid #eee;
+            padding: 14px;
+            text-align: center;
         }
-
         th {
-            background-color: #f9fafb;
+            background: linear-gradient(45deg, #0073e6, #0056b3);
+            color: white;
+            font-weight: 600;
+        }
+        td {
+            color: #333;
+        }
+        tr:nth-child(even) {
+            background-color: #f8fafc;
+        }
+        .action-link, .history-link {
+            color: #0073e6;
+            text-decoration: none;
             font-weight: 500;
+            margin: 0 5px;
+            transition: color 0.3s;
         }
-
-        tr:hover {
-            background-color: #f1f5f9;
+        .action-link:hover, .history-link:hover {
+            color: #005bb5;
+            text-decoration: underline;
         }
-
-        .btn {
-            padding: 6px 10px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 13px;
+        .add-user-btn {
+            background: linear-gradient(45deg, #28a745, #218838);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+        .add-user-btn:hover {
+            background: linear-gradient(45deg, #218838, #1e7e34);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
             text-decoration: none;
         }
-
-        .btn-history {
-            background-color: #3b82f6;
+        .delete-form {
+            display: inline;
+        }
+        .alert {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #c3e6cb;
+            font-size: 14px;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #f5c6cb;
+            font-size: 14px;
+        }
+        .toggle-sidebar {
+            display: none;
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: #004080;
             color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            z-index: 1001;
         }
-
-        .btn-edit {
-            background-color: #f59e0b;
-            color: white;
-        }
-
-        .btn-delete {
-            background-color: #ef4444;
-            color: white;
-        }
-
-        .btn:hover {
-            opacity: 0.9;
-        }
-
-        .vip-label {
-            padding: 5px 10px;
-            border-radius: 6px;
-            color: white;
-            font-weight: bold;
-        }
-
-        .vip-yes {
-            background-color: #10b981;
-        }
-
-        .vip-no {
-            background-color: #9ca3af;
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-260px);
+                position: fixed;
+                z-index: 1000;
+            }
+            .sidebar.active {
+                transform: translateX(0);
+            }
+            .content {
+                margin-left: 0;
+                padding: 20px;
+            }
+            .toggle-sidebar {
+                display: block;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="sidebar">
-        <div class="brand">Admin - Chatbot Y Tế</div>
+    <button class="toggle-sidebar" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+    <div class="sidebar" id="sidebar">
+        <div class="brand">🩺 Admin - Chatbot Y Tế</div>
         <ul>
             <li><a href="{{ route('admin.dashboard') }}"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
-            <li><a class="active" href="{{ route('admin.manage_users') }}"><i class="fas fa-users"></i> Quản lý người dùng</a></li>
-            <li><a href="{{ route('admin.manage_medical_data') }}"><i class="fas fa-notes-medical"></i> Quản lý Dữ liệu Y khoa</a></li>
-            <li><a href="{{ route('admin.manage_vip_packages') }}"><i class="fas fa-gift"></i> Quản lý Gói VIP</a></li>
-            <li><a href="{{ route('admin.admin.user_histories') }}"><i class="fas fa-history"></i> Lịch sử hỏi đáp</a></li>
+            <li><a href="{{ route('admin.manage_users') }}"><i class="fas fa-users"></i> Quản lý người dùng</a></li>
+            <li><a href="{{ route('admin.manage_medical_data') }}"><i class="fas fa-notes-medical"></i> Dữ liệu Y khoa</a></li>
+            <li><a href="{{ route('admin.vip_subscriptions.index') }}"><i class="fas fa-star"></i> Đăng ký VIP</a></li>
         </ul>
         <form action="{{ route('logout') }}" method="POST">
             @csrf
             <button type="submit" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Đăng xuất</button>
         </form>
     </div>
-
-    <div class="main-content">
-        <div class="top-actions">
-            <h1>Danh sách người dùng</h1>
-            <a class="btn-add" href="{{ route('admin.create_user') }}"><i class="fas fa-plus"></i> Thêm người dùng</a>
-        </div>
-
-        <table>
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Tên</th>
-                    <th>Email</th>
-                    <th>Vai trò</th>
-                    <th>VIP</th>
-                    <th>Thao tác</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($users as $user)
+    <div class="content">
+        <div class="container">
+            <h1>👥 Quản Lý Người Dùng</h1>
+            <div style="text-align: right; margin-bottom: 20px;">
+                <a href="{{ route('admin.create_user') }}" class="add-user-btn">
+                    <i class="fas fa-user-plus"></i> Thêm người dùng mới
+                </a>
+            </div>
+            @if (session('success'))
+                <div class="alert">
+                    {{ session('success') }}
+                </div>
+            @endif
+            @if ($errors->any())
+                <div class="error">
+                    {{ $errors->first() }}
+                </div>
+            @endif
+            <table>
+                <thead>
                     <tr>
-                        <td>{{ $user->id }}</td>
-                        <td>{{ $user->name }}</td>
-                        <td>{{ $user->email }}</td>
-                        <td>{{ $user->role }}</td>
-                        <td>
-                            @if ($user->is_vip)
-                                <span class="vip-label vip-yes">VIP</span>
-                            @else
-                                <span class="vip-label vip-no">Thường</span>
-                            @endif
-                        </td>
-                        <td>
-                            <a class="btn btn-history" href="{{ route('admin.admin.user_histories', ['id' => $user->id]) }}">Lịch sử</a>
-                            <a class="btn btn-edit" href="{{ route('admin.edit_user', ['id' => $user->id]) }}">Sửa</a>
-                            <form action="{{ route('admin.delete_user', ['id' => $user->id]) }}" method="POST" style="display:inline;">
-                                @csrf
-                                @method('DELETE')
-                                <button class="btn btn-delete" onclick="return confirm('Xác nhận xoá người dùng này?')">Xoá</button>
-                            </form>
-                        </td>
+                        <th>Tên</th>
+                        <th>Email</th>
+                        <th>Vai trò</th>
+                        <th>Hành động</th>
+                        <th>Lịch sử</th>
                     </tr>
-                @endforeach
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    @foreach ($users as $user)
+                        <tr>
+                            <td>{{ $user->name }}</td>
+                            <td>{{ $user->email }}</td>
+                            <td>{{ ucfirst($user->role) }}</td>
+                            <td>
+                                <a href="{{ route('admin.edit_user', $user->id) }}" class="action-link">Sửa</a>
+                                @if ($user->role !== 'admin')
+                                    <form action="{{ route('admin.delete_user', $user->id) }}" method="POST" class="delete-form" onsubmit="return confirm('Bạn có chắc muốn xóa người dùng này?');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="action-link" style="background: none; border: none; cursor: pointer;">Xóa</button>
+                                    </form>
+                                @endif
+                            </td>
+                            <td>
+                                <a href="{{ route('admin.user_history', $user->id) }}" class="history-link">Xem</a>
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
     </div>
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('active');
+        }
+    </script>
 </body>
 </html>

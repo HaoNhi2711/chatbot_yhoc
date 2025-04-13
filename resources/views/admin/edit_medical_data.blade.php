@@ -3,152 +3,340 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sửa Dữ liệu Y khoa</title>
+    <title>Dashboard - Sửa Dữ liệu Y khoa</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
     <style>
+        * { box-sizing: border-box; }
         body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f4f7fc;
+            font-family: 'Roboto', sans-serif;
+            background-color: #eef2f7;
             margin: 0;
             padding: 0;
+            display: flex;
+            overflow-x: hidden;
+        }
+        .sidebar {
+            width: 260px;
+            height: 100vh;
+            background-color: #004080;
+            color: white;
+            padding: 24px 20px;
+            position: fixed;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 4px 0 12px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+        .sidebar .brand {
+            text-align: center;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 30px;
+            color: #ffffff;
+        }
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            flex-grow: 1;
+        }
+        .sidebar ul li {
+            margin: 8px 0;
+        }
+        .sidebar ul li a {
+            color: white;
+            padding: 14px 20px;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 500;
+            background: linear-gradient(45deg, #0073e6, #0056b3);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        .sidebar ul li a i {
+            margin-right: 12px;
+            transition: transform 0.3s ease;
+        }
+        .sidebar ul li a:hover {
+            background: linear-gradient(45deg, #005bb5, #003087);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        .sidebar ul li a:hover i {
+            transform: translateX(5px);
+        }
+        .sidebar ul li a::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+        .sidebar ul li a:hover::before {
+            left: 100%;
+        }
+        .logout-btn {
+            padding: 14px 20px;
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+            color: white;
+            font-weight: 500;
+            border-radius: 12px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        .logout-btn i {
+            margin-right: 10px;
+            transition: transform 0.3s ease;
+        }
+        .logout-btn:hover {
+            background: linear-gradient(45deg, #c0392b, #a5281a);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        .logout-btn:hover i {
+            transform: translateX(5px);
+        }
+        .logout-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+        .logout-btn:hover::before {
+            left: 100%;
+        }
+        .content {
+            margin-left: 260px;
+            padding: 40px;
+            flex-grow: 1;
+            min-height: 100vh;
         }
         .container {
-            max-width: 800px;
-            margin: 50px auto;
-            background-color: #fff;
+            background-color: #ffffff;
             padding: 30px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
             border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: 0 auto;
         }
         h1 {
             text-align: center;
-            color: #333;
-            font-size: 32px;
+            color: #004080;
+            font-size: 28px;
             margin-bottom: 30px;
-            font-weight: 600;
         }
         label {
             display: block;
-            margin: 10px 0 5px;
-            font-size: 16px;
-            color: #555;
+            margin-bottom: 8px;
             font-weight: 500;
+            color: #333;
         }
-        input[type="text"], textarea {
+        input[type="text"],
+        textarea {
             width: 100%;
             padding: 14px;
-            border: 1px solid #ddd;
+            border: 1px solid #e0e0e0;
             border-radius: 8px;
-            font-size: 16px;
-            color: #333;
-            background-color: #f9f9f9;
-            box-sizing: border-box;
             margin-bottom: 20px;
-            transition: border-color 0.3s ease-in-out;
+            font-size: 16px;
+            background-color: #f8fafc;
+            transition: border-color 0.3s, box-shadow 0.3s;
         }
-        input[type="text"]:focus, textarea:focus {
-            border-color: #6c63ff;
+        input:focus,
+        textarea:focus {
+            border-color: #0073e6;
+            box-shadow: 0 0 8px rgba(0, 115, 230, 0.2);
             outline: none;
         }
         textarea {
-            min-height: 150px;
-            resize: vertical;
+            min-height: 180px;
+            resize: none;
         }
-        button {
-            width: 100%;
-            padding: 14px;
-            background-color: #6c63ff;
-            color: #fff;
-            font-size: 18px;
-            border: none;
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 12px;
             border-radius: 8px;
-            cursor: pointer;
-            transition: background-color 0.3s ease-in-out;
-            font-weight: 600;
-        }
-        button:hover {
-            background-color: #5a54d9;
-        }
-        .button-back {
-            width: auto;
-            background-color: transparent;
-            color: #6c63ff;
-            padding: 10px 20px;
-            font-size: 16px;
-            border: 2px solid #6c63ff;
-            border-radius: 6px;
-            text-decoration: none;
-            display: inline-block;
-            margin-top: 20px;
-            transition: all 0.3s ease-in-out;
-            font-weight: 500;
-        }
-        .button-back:hover {
-            background-color: #6c63ff;
-            color: #fff;
-            text-decoration: underline;
+            margin-bottom: 20px;
+            border: 1px solid #f5c6cb;
+            font-size: 14px;
         }
         .form-group {
             margin-bottom: 20px;
         }
-        .form-group:last-child {
-            margin-bottom: 0;
-        }
-        .error-message {
-            color: red;
-            font-size: 14px;
-            margin-top: -10px;
-            margin-bottom: 20px;
-        }
-        .back-btn {
-            font-size: 16px;
-            text-decoration: none;
-            color: #6c63ff;
-            display: inline-flex;
-            align-items: center;
+        .button-group {
+            display: flex;
+            gap: 15px;
             margin-top: 20px;
-            transition: all 0.3s ease-in-out;
+            flex-wrap: wrap;
         }
-        .back-btn i {
-            margin-right: 8px;
+        .btn {
+            padding: 14px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            color: white;
+            text-decoration: none;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
         }
-        .back-btn:hover {
-            text-decoration: underline;
-            color: #5a54d9;
+        .btn-submit {
+            background: linear-gradient(45deg, #28a745, #218838);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        .btn-back {
+            background: linear-gradient(45deg, #0073e6, #0056b3);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        .btn-submit:hover {
+            background: linear-gradient(45deg, #218838, #1e7e34);
+        }
+        .btn-back:hover {
+            background: linear-gradient(45deg, #005bb5, #003087);
+        }
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+        .btn:hover::before {
+            left: 100%;
+        }
+        .toggle-sidebar {
+            display: none;
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: #004080;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            z-index: 1001;
+        }
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-260px);
+                position: fixed;
+                z-index: 1000;
+            }
+            .sidebar.active {
+                transform: translateX(0);
+            }
+            .content {
+                margin-left: 0;
+                padding: 20px;
+            }
+            .container {
+                margin: 0 10px;
+            }
+            .button-group {
+                flex-direction: column;
+                width: 100%;
+            }
+            .btn {
+                width: 100%;
+            }
+            .toggle-sidebar {
+                display: block;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Sửa Dữ liệu Y khoa</h1>
+    <!-- Nút toggle sidebar cho mobile -->
+    <button class="toggle-sidebar" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
 
-        <form action="{{ route('admin.update_medical_data', $medicalData->id) }}" method="POST">
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="brand">🩺 Admin - Chatbot Y Tế</div>
+        <ul>
+            <li><a href="{{ route('admin.dashboard') }}"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+            <li><a href="{{ route('admin.manage_users') }}"><i class="fas fa-users"></i> Quản lý người dùng</a></li>
+            <li><a href="{{ route('admin.manage_medical_data') }}"><i class="fas fa-notes-medical"></i> Dữ liệu Y khoa</a></li>
+            <li><a href="{{ route('admin.vip_subscriptions.index') }}"><i class="fas fa-star"></i> Đăng ký VIP</a></li>
+        </ul>
+        <form action="{{ route('logout') }}" method="POST">
             @csrf
-            @method('PUT')
-
-            <div class="form-group">
-                <label for="title">Tiêu đề</label>
-                <input type="text" name="title" id="title" value="{{ $medicalData->title }}" required>
-                @error('title')
-                    <div class="error-message">{{ $message }}</div>
-                @enderror
-            </div>
-
-            <div class="form-group">
-                <label for="description">Mô tả</label>
-                <textarea name="description" id="description" required>{{ $medicalData->description }}</textarea>
-                @error('description')
-                    <div class="error-message">{{ $message }}</div>
-                @enderror
-            </div>
-
-            <button type="submit">Cập nhật</button>
+            <button type="submit" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Đăng xuất</button>
         </form>
-
-        <!-- Nút quay lại -->
-        <a href="{{ route('admin.manage_medical_data') }}" class="back-btn">
-            <i class="fas fa-arrow-left"></i> Quay lại danh sách
-        </a>
     </div>
+
+    <!-- Nội dung -->
+    <div class="content">
+        <div class="container">
+            <h1>✏️ Sửa Dữ liệu Y khoa</h1>
+
+            <form action="{{ route('admin.update_medical_data', $medicalData->id) }}" method="POST">
+                @csrf
+                @method('PUT')
+
+                <div class="form-group">
+                    <label for="title">Tiêu đề</label>
+                    <input type="text" name="title" id="title" value="{{ old('title', $medicalData->title) }}" required>
+                    @error('title')
+                        <div class="error">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Mô tả</label>
+                    <textarea name="description" id="description" required>{{ old('description', $medicalData->description) }}</textarea>
+                    @error('description')
+                        <div class="error">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="button-group">
+                    <a href="{{ route('admin.manage_medical_data') }}" class="btn btn-back"><i class="fas fa-arrow-left"></i> Quay lại</a>
+                    <button type="submit" class="btn btn-submit"><i class="fas fa-save"></i> Cập nhật</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('active');
+        }
+    </script>
 </body>
 </html>

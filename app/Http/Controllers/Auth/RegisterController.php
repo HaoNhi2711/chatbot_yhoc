@@ -2,48 +2,54 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Models\User;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\User;
+use App\Models\UserHistory;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Log;
 
 class RegisterController extends Controller
 {
-    // Hiển thị form đăng ký
     public function showRegistrationForm()
     {
+        Log::info('Truy cập showRegistrationForm, Auth: ' . (auth()->check() ? auth()->id() : 'guest'));
         return view('register');
     }
 
-    // Xử lý đăng ký người dùng
     public function register(Request $request)
     {
-        // Validate input
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8|confirmed',
+        $validatedData = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'password' => ['required', 'string', 'min:6', 'confirmed'],
         ]);
 
-        if ($validator->fails()) {
-            return redirect()->route('register')
-                        ->withErrors($validator)
-                        ->withInput();
+        try {
+            // Tạo người dùng mới
+            $user = User::create([
+                'name' => $validatedData['name'],
+                'email' => $validatedData['email'],
+                'password' => Hash::make($validatedData['password']),
+                'role' => 'user', // Mặc định là user
+                'order' => User::max('order') + 1,
+            ]);
+
+            // Ghi lịch sử
+            UserHistory::create([
+                'admin_id' => null,
+                'user_id' => $user->id,
+                'action' => 'register',
+                'note' => 'Người dùng tự đăng ký: ' . $user->name,
+            ]);
+
+            Log::info('Đăng ký thành công: User ID ' . $user->id . ', Email ' . $user->email);
+
+            // Chuyển hướng về login
+            return redirect()->route('login')->with('success', 'Đăng ký thành công! Vui lòng đăng nhập.');
+        } catch (\Exception $e) {
+            Log::error('Lỗi khi đăng ký: ' . $e->getMessage());
+            return back()->with('error', 'Có lỗi xảy ra khi đăng ký. Vui lòng thử lại.');
         }
-
-        // Tạo người dùng mới với role mặc định là 'user'
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'role' => 'user', // 👈 Gán role mặc định là 'user'
-        ]);
-
-        // Đăng nhập ngay sau khi đăng ký
-        auth()->login($user);
-
-        // Chuyển hướng tự động theo role
-        return redirect()->route('login');
     }
 }

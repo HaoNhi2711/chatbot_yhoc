@@ -9,24 +9,37 @@ class VipSubscription extends Model
 {
     use HasFactory;
 
-    // Định nghĩa bảng nếu tên bảng không phải theo quy tắc số ít
-    protected $table = 'vip_subscriptions'; 
+    protected $table = 'vip_subscriptions';
 
-    // Các cột có thể được gán đại diện cho thuộc tính của model
     protected $fillable = [
-        'user_id',
-        'vip_package_id',
-        'start_date',
-        'end_date',
+        'user_id', 'vip_package_id', 'start_date', 'end_date'
     ];
 
-    // Quan hệ với User model
+    /**
+     * Các trường được tự động chuyển đổi thành đối tượng Carbon.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'start_date' => 'datetime',
+        'end_date' => 'datetime',
+    ];
+
+    /**
+     * Quan hệ với model User.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    // Quan hệ với VipPackage model
+    /**
+     * Quan hệ với model VipPackage.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function vipPackage()
     {
         return $this->belongsTo(VipPackage::class);

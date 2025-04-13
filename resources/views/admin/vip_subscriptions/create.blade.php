@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - Thêm Người Dùng</title>
+    <title>Dashboard - Thêm Đăng ký VIP</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
     <style>
@@ -145,13 +145,17 @@
             font-size: 28px;
             margin-bottom: 30px;
         }
+        form {
+            display: flex;
+            flex-direction: column;
+        }
         label {
             display: block;
             margin-bottom: 8px;
             font-weight: 500;
             color: #333;
         }
-        input, select {
+        select, input[type="date"] {
             width: 100%;
             padding: 14px;
             border: 1px solid #e0e0e0;
@@ -161,7 +165,7 @@
             background-color: #f8fafc;
             transition: border-color 0.3s, box-shadow 0.3s;
         }
-        input:focus, select:focus {
+        select:focus, input[type="date"]:focus {
             border-color: #0073e6;
             box-shadow: 0 0 8px rgba(0, 115, 230, 0.2);
             outline: none;
@@ -173,15 +177,6 @@
             border-radius: 8px;
             margin-bottom: 20px;
             border: 1px solid #f5c6cb;
-            font-size: 14px;
-        }
-        .success {
-            background-color: #d4edda;
-            color: #155724;
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            border: 1px solid #c3e6cb;
             font-size: 14px;
         }
         .button-group {
@@ -302,54 +297,47 @@
     <!-- Nội dung -->
     <div class="content">
         <div class="container">
-            <h1>👤 Thêm Người Dùng</h1>
+            <h1>⭐ Thêm Đăng ký VIP</h1>
 
-            @if (session('success'))
-                <div class="success">{{ session('success') }}</div>
-            @endif
-            @if (session('error'))
-                <div class="error">{{ session('error') }}</div>
-            @endif
-
-            <form method="POST" action="{{ route('admin.store_user') }}">
+            <form action="{{ route('admin.vip_subscriptions.store') }}" method="POST">
                 @csrf
-
                 <div class="form-group">
-                    <label for="name">Họ và Tên</label>
-                    <input type="text" name="name" id="name" value="{{ old('name') }}" placeholder="Nhập họ và tên">
-                    @error('name') <div class="error">{{ $message }}</div> @enderror
-                </div>
-
-                <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="email" name="email" id="email" value="{{ old('email') }}" placeholder="Nhập email">
-                    @error('email') <div class="error">{{ $message }}</div> @enderror
-                </div>
-
-                <div class="form-group">
-                    <label for="password">Mật khẩu</label>
-                    <input type="password" name="password" id="password" placeholder="Nhập mật khẩu">
-                    @error('password') <div class="error">{{ $message }}</div> @enderror
-                </div>
-
-                <div class="form-group">
-                    <label for="password_confirmation">Xác nhận Mật khẩu</label>
-                    <input type="password" name="password_confirmation" id="password_confirmation" placeholder="Xác nhận mật khẩu">
-                </div>
-
-                <div class="form-group">
-                    <label for="role">Quyền</label>
-                    <select name="role" id="role">
-                        <option value="" disabled {{ old('role') ? '' : 'selected' }}>Chọn quyền</option>
-                        <option value="user" {{ old('role') == 'user' ? 'selected' : '' }}>Người dùng</option>
-                        <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>Admin</option>
+                    <label for="user_id">Người dùng</label>
+                    <select name="user_id" id="user_id" required>
+                        <option value="">Chọn người dùng</option>
+                        @foreach($users as $user)
+                            <option value="{{ $user->id }}" {{ old('user_id') == $user->id ? 'selected' : '' }}>{{ $user->name }} ({{ $user->email }})</option>
+                        @endforeach
                     </select>
-                    @error('role') <div class="error">{{ $message }}</div> @enderror
+                    @error('user_id') <div class="error">{{ $message }}</div> @enderror
+                </div>
+
+                <div class="form-group">
+                    <label for="vip_package_id">Gói VIP</label>
+                    <select name="vip_package_id" id="vip_package_id" required>
+                        <option value="">Chọn gói VIP</option>
+                        @foreach($vipPackages as $package)
+                            <option value="{{ $package->id }}" {{ old('vip_package_id') == $package->id ? 'selected' : '' }}>{{ $package->name }} ({{ $package->duration }} ngày)</option>
+                        @endforeach
+                    </select>
+                    @error('vip_package_id') <div class="error">{{ $message }}</div> @enderror
+                </div>
+
+                <div class="form-group">
+                    <label for="start_date">Ngày bắt đầu</label>
+                    <input type="date" name="start_date" id="start_date" value="{{ old('start_date') }}" required>
+                    @error('start_date') <div class="error">{{ $message }}</div> @enderror
+                </div>
+
+                <div class="form-group">
+                    <label for="end_date">Ngày kết thúc</label>
+                    <input type="date" name="end_date" id="end_date" value="{{ old('end_date') }}" required>
+                    @error('end_date') <div class="error">{{ $message }}</div> @enderror
                 </div>
 
                 <div class="button-group">
-                    <button type="submit" class="btn btn-submit"><i class="fas fa-save"></i> Thêm Người Dùng</button>
-                    <a href="{{ route('admin.manage_users') }}" class="btn btn-back"><i class="fas fa-arrow-left"></i> Quay lại</a>
+                    <a href="{{ route('admin.vip_subscriptions.index') }}" class="btn btn-back"><i class="fas fa-arrow-left"></i> Quay lại</a>
+                    <button type="submit" class="btn btn-submit"><i class="fas fa-save"></i> Lưu</button>
                 </div>
             </form>
         </div>

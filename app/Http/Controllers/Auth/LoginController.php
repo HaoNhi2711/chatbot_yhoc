@@ -5,59 +5,56 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class LoginController extends Controller
 {
-    // Hiển thị form đăng nhập
     public function showLoginForm()
     {
+        Log::info('Truy cập showLoginForm, Auth: ' . (Auth::check() ? Auth::id() : 'guest'));
         return view('login');
     }
 
-    // Xử lý đăng nhập
     public function login(Request $request)
     {
-        // Kiểm tra dữ liệu đầu vào
         $credentials = $request->validate([
             'email' => ['required', 'email'],
             'password' => ['required'],
         ]);
 
-        // Thử đăng nhập
+        Log::info('Thử đăng nhập với email: ' . $request->email);
+
         if (Auth::attempt($credentials)) {
-            $request->session()->regenerate(); // Bảo mật session
+            $request->session()->regenerate();
             $user = Auth::user();
 
-            // Điều hướng theo vai trò
+            Log::info('Đăng nhập thành công: User ID ' . $user->id . ', Role ' . ($user->role ?? 'null'));
+
             if ($user->role === 'admin') {
-                return redirect()->route('admin.dashboard');
+                return redirect()->route('admin.dashboard')->with('success', 'Chào mừng quản trị viên!');
+            } elseif ($user->role === 'user') {
+                return redirect()->route('user.chat')->with('success', 'Chào mừng bạn đến với chatbot!');
             }
 
-            // Mặc định mọi user thường (kể cả VIP) đều vào chat
-            if ($user->role === 'user') {
-                return redirect()->route('user.chat');
-            }
-
-            // Nếu role không xác định
+            // Role không hợp lệ
             Auth::logout();
-            return redirect()->route('login')->withErrors([
-                'message' => 'Tài khoản không hợp lệ. Vui lòng liên hệ quản trị viên.',
-            ]);
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+            Log::warning('Role không hợp lệ: User ID ' . $user->id . ', Role ' . ($user->role ?? 'null'));
+            return redirect()->route('home')->with('error', 'Vai trò tài khoản không được hỗ trợ. Vui lòng liên hệ quản trị viên.');
         }
 
-        // Đăng nhập thất bại
-        return back()->withErrors([
-            'message' => 'Sai email hoặc mật khẩu!',
-        ]);
+        Log::error('Đăng nhập thất bại: Email ' . $request->email);
+        return back()->with('error', 'Email hoặc mật khẩu không đúng!')->onlyInput('email');
     }
 
-    // Đăng xuất
     public function logout(Request $request)
     {
+        Log::info('Đăng xuất: User ID ' . (Auth::id() ?? 'null'));
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('login');
+        return redirect()->route('login')->with('success', 'Bạn đã đăng xuất thành công!');
     }
 }

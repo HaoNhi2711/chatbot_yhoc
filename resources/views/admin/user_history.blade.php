@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - Thêm Người Dùng</title>
+    <title>Lịch Sử Hỏi Đáp - {{ $user->name }}</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
     <style>
@@ -90,40 +90,17 @@
             color: white;
             font-weight: 500;
             border-radius: 12px;
-            text-decoration: none;
             display: flex;
             align-items: center;
             border: none;
             cursor: pointer;
             transition: all 0.3s ease;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            position: relative;
-            overflow: hidden;
-        }
-        .logout-btn i {
-            margin-right: 10px;
-            transition: transform 0.3s ease;
         }
         .logout-btn:hover {
             background: linear-gradient(45deg, #c0392b, #a5281a);
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-        }
-        .logout-btn:hover i {
-            transform: translateX(5px);
-        }
-        .logout-btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: 0.5s;
-        }
-        .logout-btn:hover::before {
-            left: 100%;
         }
         .content {
             margin-left: 260px;
@@ -136,8 +113,6 @@
             padding: 30px;
             border-radius: 12px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            max-width: 600px;
-            margin: 0 auto;
         }
         h1 {
             text-align: center;
@@ -145,37 +120,37 @@
             font-size: 28px;
             margin-bottom: 30px;
         }
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        table, th, td {
+            border: 1px solid #e0e0e0;
+        }
+        th, td {
+            padding: 14px;
+            text-align: left;
+        }
+        th {
+            background: linear-gradient(45deg, #0073e6, #0056b3);
+            color: white;
+            font-weight: 600;
+        }
+        td {
             color: #333;
         }
-        input, select {
-            width: 100%;
-            padding: 14px;
-            border: 1px solid #e0e0e0;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            font-size: 16px;
+        tr:nth-child(even) {
             background-color: #f8fafc;
-            transition: border-color 0.3s, box-shadow 0.3s;
         }
-        input:focus, select:focus {
-            border-color: #0073e6;
-            box-shadow: 0 0 8px rgba(0, 115, 230, 0.2);
-            outline: none;
+        .no-response {
+            color: #e74c3c; /* Màu đỏ cho "Chưa có trả lời" */
+            font-style: italic;
         }
-        .error {
-            background-color: #f8d7da;
-            color: #721c24;
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            border: 1px solid #f5c6cb;
-            font-size: 14px;
-        }
-        .success {
+        .alert {
             background-color: #d4edda;
             color: #155724;
             padding: 12px;
@@ -184,59 +159,10 @@
             border: 1px solid #c3e6cb;
             font-size: 14px;
         }
-        .button-group {
-            display: flex;
-            gap: 15px;
-            margin-top: 20px;
-            flex-wrap: wrap;
-        }
-        .btn {
-            padding: 14px 24px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            color: white;
-            text-decoration: none;
-            position: relative;
-            overflow: hidden;
-            transition: all 0.3s ease;
-        }
-        .btn-submit {
-            background: linear-gradient(45deg, #28a745, #218838);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        }
-        .btn-back {
-            background: linear-gradient(45deg, #0073e6, #0056b3);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        }
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-        }
-        .btn-submit:hover {
-            background: linear-gradient(45deg, #218838, #1e7e34);
-        }
-        .btn-back:hover {
-            background: linear-gradient(45deg, #005bb5, #003087);
-        }
-        .btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: 0.5s;
-        }
-        .btn:hover::before {
-            left: 100%;
+        .alert-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
         }
         .toggle-sidebar {
             display: none;
@@ -264,16 +190,6 @@
                 margin-left: 0;
                 padding: 20px;
             }
-            .container {
-                margin: 0 10px;
-            }
-            .button-group {
-                flex-direction: column;
-                width: 100%;
-            }
-            .btn {
-                width: 100%;
-            }
             .toggle-sidebar {
                 display: block;
             }
@@ -281,10 +197,7 @@
     </style>
 </head>
 <body>
-    <!-- Nút toggle sidebar cho mobile -->
     <button class="toggle-sidebar" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
-
-    <!-- Sidebar -->
     <div class="sidebar" id="sidebar">
         <div class="brand">🩺 Admin - Chatbot Y Tế</div>
         <ul>
@@ -298,63 +211,46 @@
             <button type="submit" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Đăng xuất</button>
         </form>
     </div>
-
-    <!-- Nội dung -->
     <div class="content">
         <div class="container">
-            <h1>👤 Thêm Người Dùng</h1>
-
-            @if (session('success'))
-                <div class="success">{{ session('success') }}</div>
-            @endif
+            <h1>Lịch Sử Hỏi Đáp của {{ $user->name }}</h1>
             @if (session('error'))
-                <div class="error">{{ session('error') }}</div>
+                <div class="alert alert-danger">
+                    {{ session('error') }}
+                </div>
             @endif
-
-            <form method="POST" action="{{ route('admin.store_user') }}">
-                @csrf
-
-                <div class="form-group">
-                    <label for="name">Họ và Tên</label>
-                    <input type="text" name="name" id="name" value="{{ old('name') }}" placeholder="Nhập họ và tên">
-                    @error('name') <div class="error">{{ $message }}</div> @enderror
+            @if (empty($messages) || count($messages) === 0)
+                <div class="alert">
+                    Người dùng này chưa có lịch sử hỏi đáp.
                 </div>
-
-                <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="email" name="email" id="email" value="{{ old('email') }}" placeholder="Nhập email">
-                    @error('email') <div class="error">{{ $message }}</div> @enderror
-                </div>
-
-                <div class="form-group">
-                    <label for="password">Mật khẩu</label>
-                    <input type="password" name="password" id="password" placeholder="Nhập mật khẩu">
-                    @error('password') <div class="error">{{ $message }}</div> @enderror
-                </div>
-
-                <div class="form-group">
-                    <label for="password_confirmation">Xác nhận Mật khẩu</label>
-                    <input type="password" name="password_confirmation" id="password_confirmation" placeholder="Xác nhận mật khẩu">
-                </div>
-
-                <div class="form-group">
-                    <label for="role">Quyền</label>
-                    <select name="role" id="role">
-                        <option value="" disabled {{ old('role') ? '' : 'selected' }}>Chọn quyền</option>
-                        <option value="user" {{ old('role') == 'user' ? 'selected' : '' }}>Người dùng</option>
-                        <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>Admin</option>
-                    </select>
-                    @error('role') <div class="error">{{ $message }}</div> @enderror
-                </div>
-
-                <div class="button-group">
-                    <button type="submit" class="btn btn-submit"><i class="fas fa-save"></i> Thêm Người Dùng</button>
-                    <a href="{{ route('admin.manage_users') }}" class="btn btn-back"><i class="fas fa-arrow-left"></i> Quay lại</a>
-                </div>
-            </form>
+            @else
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Câu hỏi</th>
+                            <th>Trả lời</th>
+                            <th>Thời gian</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($messages as $message)
+                            <tr>
+                                <td>{{ $message->question ?? 'Không có câu hỏi' }}</td>
+                                <td>
+                                    @if ($message->response)
+                                        {{ $message->response }}
+                                    @else
+                                        <span class="no-response">Chưa có trả lời</span>
+                                    @endif
+                                </td>
+                                <td>{{ \Carbon\Carbon::parse($message->created_at)->format('H:i d/m/Y') }}</td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            @endif
         </div>
     </div>
-
     <script>
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
